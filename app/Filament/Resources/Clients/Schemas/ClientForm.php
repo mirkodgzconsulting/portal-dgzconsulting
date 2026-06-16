@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Clients\Schemas;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -34,17 +33,12 @@ class ClientForm
                     ->image()
                     ->directory('clients')
                     ->avatar(),
-                Section::make('Acceso al portal')
-                    ->description('Deja vacío para no cambiar la contraseña actual.')
-                    ->components([
-                        TextInput::make('password')
-                            ->label('Nueva contraseña')
-                            ->password()
-                            ->revealable()
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->dehydrateStateUsing(fn ($state) => bcrypt($state))
-                            ->placeholder('Escribe para asignar o cambiar la contraseña'),
-                    ]),
+                TextInput::make('password')
+                    ->label('Nueva contraseña (dejar vacío para no cambiar)')
+                    ->password()
+                    ->revealable()
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->dehydrateStateUsing(fn ($state) => bcrypt($state)),
             ]);
     }
 }
