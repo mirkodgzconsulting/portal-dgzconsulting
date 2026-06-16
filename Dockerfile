@@ -1,4 +1,4 @@
-FROM php:8.3-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # System dependencies
 RUN apk add --no-cache \
@@ -9,11 +9,14 @@ RUN apk add --no-cache \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
-    sqlite-dev
+    sqlite-dev \
+    icu-dev \
+    libzip-dev \
+    oniguruma-dev
 
 # PHP extensions
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
-    && docker-php-ext-install pdo_sqlite opcache pcntl gd
+    && docker-php-ext-install pdo_sqlite opcache pcntl gd intl zip
 
 # OPcache tuned for production
 RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
