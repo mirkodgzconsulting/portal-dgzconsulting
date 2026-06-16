@@ -104,8 +104,45 @@ INSERT INTO `sites` (`id`,`client_id`,`name`,`domain`,`slug`,`login_url`,`userna
 (50,35,'ConkretPeru','conkretperu.com','conkretperu',NULL,NULL,NULL,'Astro','Vercel',1,'Repo: /Users/mirkodgz/Projects/joel-peru/conkret-peru-sito','2026-06-15 15:56:12','2026-06-15 15:56:12');
 SQL);
 
+        // --- SUBSCRIPTIONS ---
+        DB::unprepared(<<<'SQL'
+INSERT INTO `subscriptions` VALUES
+(4,17,'Hosting+Dominio',0.00,'yearly','2023-10-23','2024-10-23','vencido','Pago Completo [50€]\nStatus original en Notion: Pagado.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(5,36,'Hosting',0.00,'yearly','2026-06-15',NULL,'fuera_de_servicio','Status original en Notion: Fuera de Servicio.\nFecha de inicio no registrada en Notion (se usó una fecha por defecto).','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(6,29,'Hosting+Dominio',0.00,'yearly','2026-06-15',NULL,'pagado','Status original en Notion: Verificar.\nFecha de inicio no registrada en Notion (se usó una fecha por defecto).','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(7,12,'Hosting',0.00,'yearly','2024-02-25','2025-02-25','vencido','Pagato 96€ (con factura) -(senza il costo di spazio GB emails )\nDominio, lo administra/paga ÉL\nStatus original en Notion: Pagado.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(8,21,'Hosting',285.00,'yearly','2023-02-01','2025-02-01','vencido','Status original en Notion: Pagado.\nPrecio original en Notion: Total 285 soles.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(9,26,'Hosting',40.00,'yearly','2023-10-20','2024-11-20','vencido','Pago 40 Hosting 17/11/2023\nEl Dominio lo paga el\nStatus original en Notion: Pagado.\nPrecio original en Notion: 40 solo Hosting.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(10,4,'Hosting+Dominio',85.00,'yearly','2022-01-15','2025-01-15','vencido','Status original en Notion: Verificar.\nPrecio original en Notion: 85 euros.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(11,5,'Hosting',0.00,'yearly','2023-04-01','2024-04-01','vencido','75\nStatus original en Notion: Pagado.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(12,14,'Hosting',0.00,'yearly','2023-04-26','2024-04-26','vencido','Status original en Notion: Verificar.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(13,7,'Hosting+Dominio',0.00,'yearly','2023-11-27','2024-11-27','vencido','Pagado Hosting y Dominio hasta 11 del 2024\nLo paga el\nStatus original en Notion: Pagado.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(14,18,'Hosting+Dominio',270.00,'yearly','2023-06-12','2025-06-12','vencido','Pagodo hasta Junio del 2025\nStatus original en Notion: Pagado.\nPrecio original en Notion: Total 270 Soles.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(15,8,'Hosting+Dominio',50.00,'yearly','2022-11-26','2024-03-01','vencido','Status original en Notion: Verificar.\nPrecio original en Notion: 50.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(16,15,'Hosting+Dominio',50.00,'yearly','2022-06-01','2025-05-25','vencido','Comprado el 16 marzo 2022, renovado hasta 16-marzo 2025\nStatus original en Notion: Pagado.\nPrecio original en Notion: 50.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(17,9,'Hosting+Dominio',169.00,'yearly','2023-05-26','2025-05-26','vencido','Pago 145 Hosting +19 Dominio\nDominio Prezzo 25€\nStatus original en Notion: Pagado.\nPrecio original en Notion: 169 €.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(18,37,'Hosting',0.00,'yearly','2026-06-15',NULL,'fuera_de_servicio','Status original en Notion: Fuera de Servicio.\nFecha de inicio no registrada en Notion (se usó una fecha por defecto).','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(19,24,'Hosting+Dominio',0.00,'yearly','2025-01-06','2026-01-06','vencido','Pago Completo, 204 soles : ultimo pago fue el 07/01/2025\nStatus original en Notion: Pagado.\nPrecio original en Notion: Precio Total con Dominio : Ver Pestaña Notes.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(20,19,'Hosting',0.00,'yearly','2023-06-21','2025-06-21','vencido','Status original en Notion: Pagado.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(21,23,'Hosting+Dominio',0.00,'yearly','2026-06-15',NULL,'pagado','Status original en Notion: Pagado.\nFecha de inicio no registrada en Notion (se usó una fecha por defecto).','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(22,10,'Hosting',0.00,'yearly','2022-09-01','2024-09-01','vencido','Pago Hosting 35 - 12/11/2023\nDominio, lo administra/paga ÉL\nStatus original en Notion: Pagado.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(23,38,'Hosting',0.00,'yearly','2022-03-14','2024-03-14','vencido','Pago 35 Hosting 10/10/2023\nEl Dominio lo paga ella.\nStatus original en Notion: Pagado.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(24,13,'Hosting+Dominio',0.00,'yearly','2022-07-14','2024-07-14','vencido','Pago\nStatus original en Notion: Pagado.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(25,16,'Hosting+Dominio',95.00,'yearly','2023-05-25','2025-05-25','vencido','Ultimo pago 95€ pago el 25 de maggio 2024, incluida la licencia de plugins del database\nStatus original en Notion: Scadenza.\nPrecio original en Notion: 95.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(26,11,'Hosting',0.00,'yearly','2023-03-30','2024-03-30','vencido','Pago Solo Hosting 40€\nDominio, lo administra/paga ÉL\nStatus original en Notion: Pagado.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(27,22,'Hosting',285.00,'yearly','2023-11-10','2024-11-10','vencido','Status original en Notion: NO PAGADO.\nPrecio original en Notion: Total 285 soles.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(28,6,'Hosting',0.00,'yearly','2023-04-01','2024-04-01','vencido','75\nStatus original en Notion: Pagado.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(29,25,'Hosting+Dominio',0.00,'yearly','2024-08-08','2025-08-08','vencido','Pago completo 2024 - Ultimo pago fue en Agosto de 2024  ( pero en realidad pago meses despues )\nStatus original en Notion: Pagado.\nPrecio original en Notion: Precio Total con Dominio : Ver Pestaña Notes.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(30,39,'Dominio',0.00,'yearly','2026-06-15',NULL,'fuera_de_servicio','Status original en Notion: Fuera de Servicio.\nFecha de inicio no registrada en Notion (se usó una fecha por defecto).','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(31,40,'Hosting+Dominio',17.90,'yearly','2024-02-07','2027-02-07','pagado','332€ -  Pagamento realizado Febrero del 2026 , realizado hasta el  Febrero del 2027\n—-\nPagado 157€(con factura) - 120€ sin factura (sin cobrar el espacio 1 GB- Manutenzione sito cobrar 175 euro al anno\nDominio, en Aruba\nStatus original en Notion: Pagado.\nPrecio original en Notion: 17.9€.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(32,41,'Hosting+Dominio',17.90,'yearly','2025-02-20','2026-02-07','vencido','Dominio, en Aruba\nStatus original en Notion: Pagado.\nPrecio original en Notion: 17.9€.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(33,42,'Hosting+Dominio',15.00,'yearly','2025-02-19','2026-02-19','vencido','Dominio, en Aruba\nStatus original en Notion: Pagado.\nPrecio original en Notion: 15€.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(34,20,'Hosting',175.00,'yearly','2025-11-01','2026-11-01','pagado','In atessa di pagamento da Sra Pilar 175€\nDominio, en Aruba\nStatus original en Notion: In Atessa di Pago.\nPrecio original en Notion: 175.','2026-06-15 13:35:55','2026-06-15 13:35:55'),
+(35,43,'Hosting',200.00,'yearly','2026-01-01','2027-01-01','pagado','Hosting compartido: cubre tambien sabiduriadealma.com, arboldelakabala.com, conciertospablonahual.com, arboldevida.es y pablonahual.com (sitios 44-48). No incluye mantenimiento.','2026-06-15 14:48:31','2026-06-15 14:48:31');
+SQL);
+
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
-        $this->command->info('Clients (33) and Sites (47) imported. Run CrmPostsSeeder next for posts.');
+        $this->command->info('Clients (33), Sites (47), Subscriptions (32) imported.');
     }
 }
