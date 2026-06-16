@@ -68,11 +68,7 @@ class ClientPanelProvider extends PanelProvider
                     ->pluralLabel('Mis Imágenes')
                     ->navigationIcon(Heroicon::OutlinedPhoto)
                     ->navigationGroup('Contenido')
-                    ->navigationSort(2)
-                    ->disk('r2')
-                    ->visibility('public')
-                    ->model(\App\Models\Media::class)
-                    ->tableModifyQueryUsing(fn ($query) => $query->where('client_id', auth()->id())),
+                    ->navigationSort(2),
             ])
             ->middleware([
                 EncryptCookies::class,
