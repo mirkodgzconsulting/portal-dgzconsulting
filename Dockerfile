@@ -8,7 +8,8 @@ RUN apk add --no-cache \
     unzip \
     libpng-dev \
     libjpeg-turbo-dev \
-    freetype-dev
+    freetype-dev \
+    sqlite-dev
 
 # PHP extensions
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
