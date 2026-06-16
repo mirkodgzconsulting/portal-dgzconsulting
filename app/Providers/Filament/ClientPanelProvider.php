@@ -34,6 +34,7 @@ class ClientPanelProvider extends PanelProvider
             ->brandLogo(asset('DGZConsulting-Logo-Slogan-v2.png'))
             ->brandLogoHeight('2.5rem')
             ->favicon(asset('Favicon-DGZConsulting-Squared.png'))
+            ->viteTheme('resources/css/filament/cliente/theme.css')
             ->colors([
                 'primary' => [
                     50  => '#eff6ff',

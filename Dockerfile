@@ -12,7 +12,9 @@ RUN apk add --no-cache \
     sqlite-dev \
     icu-dev \
     libzip-dev \
-    oniguruma-dev
+    oniguruma-dev \
+    nodejs \
+    npm
 
 # PHP extensions
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
@@ -35,6 +37,9 @@ RUN composer install --no-dev --no-interaction --optimize-autoloader --no-script
 
 # Copy the full application
 COPY . .
+
+# Build frontend assets (Filament custom theme)
+RUN npm ci && npm run build
 
 # Post-install scripts (generates Filament/package discovery)
 RUN composer run-script post-autoload-dump --no-interaction 2>/dev/null || true
