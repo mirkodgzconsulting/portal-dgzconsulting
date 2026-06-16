@@ -32,9 +32,12 @@ class PostResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
+        $clientId = Auth::guard('client')->id()
+            ?? Auth::guard('client_user')->user()?->client_id;
+
         return parent::getEloquentQuery()
-            ->whereHas('site', function (Builder $query): void {
-                $query->where('client_id', Auth::guard('client')->id())
+            ->whereHas('site', function (Builder $query) use ($clientId): void {
+                $query->where('client_id', $clientId)
                     ->where('has_blog', true);
             });
     }

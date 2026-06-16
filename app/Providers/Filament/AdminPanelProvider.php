@@ -13,7 +13,9 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Icons\Heroicon;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -53,6 +55,12 @@ class AdminPanelProvider extends PanelProvider
             ->defaultThemeMode(ThemeMode::Light)
             ->sidebarWidth('15rem')
             ->maxContentWidth(Width::Full)
+            ->renderHook(
+                PanelsRenderHook::USER_MENU_BEFORE,
+                fn () => Auth::check()
+                    ? '<div class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200">' . e(Auth::user()->name) . '</div>'
+                    : ''
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

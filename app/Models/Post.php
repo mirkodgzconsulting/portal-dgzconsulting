@@ -11,6 +11,7 @@ class Post extends Model
 {
     protected $fillable = [
         'site_id',
+        'category_id',
         'title',
         'slug',
         'description',
@@ -21,6 +22,14 @@ class Post extends Model
         'pub_date',
         'published',
         'featured',
+        'seo_title',
+        'seo_description',
+        'focus_keyword',
+        'canonical_url',
+        'og_title',
+        'og_description',
+        'og_image',
+        'robots',
     ];
 
     protected $casts = [
@@ -42,6 +51,11 @@ class Post extends Model
     public function site(): BelongsTo
     {
         return $this->belongsTo(Site::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     public function getCoverImageUrlAttribute(): ?string

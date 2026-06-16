@@ -27,11 +27,18 @@ class SubscriptionResource extends Resource
 
     protected static ?string $pluralModelLabel = 'mis suscripciones';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::guard('client')->check();
+    }
+
     public static function getEloquentQuery(): Builder
     {
+        $clientId = Auth::guard('client')->id() ?? 0;
+
         return parent::getEloquentQuery()
-            ->whereHas('site', function (Builder $query): void {
-                $query->where('client_id', Auth::guard('client')->id());
+            ->whereHas('site', function (Builder $query) use ($clientId): void {
+                $query->where('client_id', $clientId);
             });
     }
 

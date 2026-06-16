@@ -3,6 +3,9 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Cliente\Pages\EditProfile;
+use App\Filament\Cliente\Pages\Login;
+use App\Http\Middleware\AuthenticateClientOrEditor;
+use App\Models\Client;
 use Awcodes\Curator\CuratorPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -14,12 +17,14 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class ClientPanelProvider extends PanelProvider
@@ -30,7 +35,7 @@ class ClientPanelProvider extends PanelProvider
             ->id('cliente')
             ->path('area-cliente')
             ->authGuard('client')
-            ->login()
+            ->login(Login::class)
             ->profile(EditProfile::class)
             ->brandName('DGZ Consulting · Portal Cliente')
             ->brandLogo(asset('DGZConsulting-Logo-Slogan-v2.png'))
@@ -55,6 +60,14 @@ class ClientPanelProvider extends PanelProvider
             ->defaultThemeMode(ThemeMode::Light)
             ->sidebarWidth('15rem')
             ->maxContentWidth(Width::Full)
+            ->renderHook(
+                PanelsRenderHook::USER_MENU_BEFORE,
+                fn () => Auth::guard('client')->check()
+                    ? '<div class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200">' . e(Auth::guard('client')->user()->name) . '</div>'
+                    : (Auth::guard('client_user')->check()
+                        ? '<div class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200">' . e(Auth::guard('client_user')->user()->name) . ' <span class="ml-1 text-xs text-gray-400">(editor)</span></div>'
+                        : '')
+            )
             ->discoverResources(in: app_path('Filament/Cliente/Resources'), for: 'App\Filament\Cliente\Resources')
             ->pages([
                 Dashboard::class,
@@ -83,6 +96,7 @@ class ClientPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                AuthenticateClientOrEditor::class,
             ]);
     }
 }

@@ -27,10 +27,15 @@ class SiteResource extends Resource
 
     protected static ?string $pluralModelLabel = 'mis sitios';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::guard('client')->check();
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('client_id', Auth::guard('client')->id());
+            ->where('client_id', Auth::guard('client')->id() ?? 0);
     }
 
     public static function infolist(Schema $schema): Schema
