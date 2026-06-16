@@ -36,7 +36,7 @@ class ClientForm
                     ->avatar(),
                 Section::make('Acceso al portal')
                     ->description('Deja vacío para no cambiar la contraseña actual.')
-                    ->schema([
+                    ->components([
                         TextInput::make('password')
                             ->label('Nueva contraseña')
                             ->password()
