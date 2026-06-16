@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Nomanur\FilamentSeoPro\Traits\HasSeo;
 
 class Post extends Model
 {
+    use HasSeo;
     protected $fillable = [
         'site_id',
         'category_id',

@@ -30,6 +30,13 @@ class PostResource extends Resource
 
     protected static ?string $pluralModelLabel = 'posts';
 
+    protected static ?int $navigationSort = 1;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Contenido';
+    }
+
     public static function getEloquentQuery(): Builder
     {
         $clientId = Auth::guard('client')->id()

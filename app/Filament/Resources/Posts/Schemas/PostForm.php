@@ -12,6 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Nomanur\FilamentSeoPro\Forms\SeoSection;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
@@ -135,73 +136,7 @@ class PostForm
                     ->label('Destacado')
                     ->default(false),
 
-                Section::make('SEO')
-                    ->description('Optimización para motores de búsqueda. Si se dejan vacíos, se usan el título y resumen del artículo.')
-                    ->collapsed()
-                    ->columnSpanFull()
-                    ->columns(2)
-                    ->schema([
-                        TextInput::make('focus_keyword')
-                            ->label('Palabra clave principal')
-                            ->placeholder('ej: concreto premezclado lima')
-                            ->helperText('La keyword que querés posicionar con este artículo.')
-                            ->columnSpanFull(),
-
-                        TextInput::make('seo_title')
-                            ->label('Título SEO')
-                            ->placeholder('Título que aparece en Google (máx. 60 caracteres)')
-                            ->helperText('Si se deja vacío, se usa el título del artículo.')
-                            ->maxLength(60)
-                            ->columnSpanFull(),
-
-                        Textarea::make('seo_description')
-                            ->label('Meta descripción SEO')
-                            ->placeholder('Descripción que aparece en Google (máx. 160 caracteres)')
-                            ->helperText('Si se deja vacío, se usa el resumen del artículo.')
-                            ->maxLength(160)
-                            ->columnSpanFull(),
-
-                        TextInput::make('canonical_url')
-                            ->label('URL canónica')
-                            ->placeholder('https://tusitio.com/blog/tu-articulo')
-                            ->helperText('Solo si este artículo es una copia de otro. Normalmente se deja vacío.')
-                            ->url()
-                            ->columnSpanFull(),
-
-                        Select::make('robots')
-                            ->label('Indexación (robots)')
-                            ->options([
-                                'index,follow'     => 'Indexar y seguir enlaces (recomendado)',
-                                'noindex,follow'   => 'No indexar, seguir enlaces',
-                                'index,nofollow'   => 'Indexar, no seguir enlaces',
-                                'noindex,nofollow' => 'No indexar, no seguir enlaces',
-                            ])
-                            ->default('index,follow')
-                            ->columnSpanFull(),
-
-                        Section::make('Open Graph (redes sociales)')
-                            ->description('Lo que ve la gente cuando comparte el artículo en Facebook, WhatsApp, LinkedIn, etc.')
-                            ->collapsed()
-                            ->columnSpanFull()
-                            ->schema([
-                                TextInput::make('og_title')
-                                    ->label('Título OG')
-                                    ->placeholder('Título al compartir en redes (máx. 60 caracteres)')
-                                    ->maxLength(60),
-
-                                Textarea::make('og_description')
-                                    ->label('Descripción OG')
-                                    ->placeholder('Descripción al compartir en redes (máx. 160 caracteres)')
-                                    ->maxLength(160),
-
-                                TextInput::make('og_image')
-                                    ->label('Imagen OG (URL)')
-                                    ->placeholder('https://... — recomendado 1200×630 px')
-                                    ->helperText('Si se deja vacío, se usa la imagen de portada.')
-                                    ->url()
-                                    ->columnSpanFull(),
-                            ]),
-                    ]),
+                SeoSection::make(),
             ]);
     }
 }

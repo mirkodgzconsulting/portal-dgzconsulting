@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d859fc150f4b173c0fb611fb2378da45",
+    "content-hash": "5798d5a37edc1217d8744323b59aa4ad",
     "packages": [
         {
             "name": "awcodes/filament-curator",
@@ -4309,6 +4309,81 @@
                 "source": "https://github.com/nikic/PHP-Parser/tree/v5.7.0"
             },
             "time": "2025-12-06T11:56:16+00:00"
+        },
+        {
+            "name": "nomanur/filament-seo-pro",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nomanur/filament-seo-pro.git",
+                "reference": "dab12609f3a6c0063eace9ff5c12fb666b0b7318"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nomanur/filament-seo-pro/zipball/dab12609f3a6c0063eace9ff5c12fb666b0b7318",
+                "reference": "dab12609f3a6c0063eace9ff5c12fb666b0b7318",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.2 || ^4.0 || ^5.0",
+                "filament/forms": "^3.2 || ^4.0 || ^5.0",
+                "filament/support": "^3.2 || ^4.0 || ^5.0",
+                "filament/tables": "^3.2 || ^4.0 || ^5.0",
+                "illuminate/support": "^10.0 || ^11.0 || ^12.0 || ^13.0",
+                "livewire/livewire": "^3.0 || ^4.0",
+                "php": "^8.2 || ^8.3 || ^8.4",
+                "spatie/laravel-package-tools": "^1.16"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.0",
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^9.0 || ^10.0",
+                "pestphp/pest": "^3.0",
+                "pestphp/pest-plugin-laravel": "^3.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Nomanur\\FilamentSeoPro\\SeoServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nomanur\\FilamentSeoPro\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nomanur Rahman",
+                    "email": "nomanurrahman@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The definitive SEO toolkit for Filament — live analysis, Google preview, social cards, schema markup, and bulk management.",
+            "homepage": "https://github.com/nomanur/filament-seo-pro",
+            "keywords": [
+                "filament",
+                "filament-plugin",
+                "laravel",
+                "meta-tags",
+                "open-graph",
+                "schema-markup",
+                "seo",
+                "seo-analyzer",
+                "twitter-cards",
+                "yoast"
+            ],
+            "support": {
+                "issues": "https://github.com/nomanur/filament-seo-pro/issues",
+                "source": "https://github.com/nomanur/filament-seo-pro/tree/v1.0.0"
+            },
+            "time": "2026-06-11T11:00:31+00:00"
         },
         {
             "name": "nunomaduro/termwind",
@@ -10980,7 +11055,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.3"
+        "php": "^8.4"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"

@@ -2,15 +2,22 @@
 
 namespace App\Filament\Cliente\Resources\Posts\Tables;
 
+use App\Models\Category;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ReplicateAction;
 use Filament\Actions\ViewAction;
+use Filament\Actions\BulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
 
 class PostsTable
 {
@@ -20,25 +27,62 @@ class PostsTable
             ->columns([
                 TextColumn::make('site.name')
                     ->label('Sitio')
+                    ->badge()
+                    ->color('gray')
                     ->searchable(),
                 TextColumn::make('title')
                     ->label('Título')
-                    ->searchable(),
+                    ->searchable()
+                    ->description(fn ($record) => $record->description ? str($record->description)->limit(60) : null),
+                TextColumn::make('category.name')
+                    ->label('Categoría')
+                    ->badge()
+                    ->color('info')
+                    ->placeholder('Sin categoría'),
                 TextColumn::make('pub_date')
                     ->label('Fecha')
-                    ->date()
+                    ->date('d/m/Y')
                     ->sortable(),
                 IconColumn::make('published')
                     ->label('Publicado')
                     ->boolean(),
-                TextColumn::make('tags')
-                    ->label('Etiquetas')
-                    ->badge(),
+                IconColumn::make('featured')
+                    ->label('Destacado')
+                    ->boolean(),
             ])
+            ->defaultSort('pub_date', 'desc')
             ->defaultPaginationPageOption(25)
             ->filters([
                 TernaryFilter::make('published')
-                    ->label('Publicado'),
+                    ->label('Estado')
+                    ->placeholder('Todos')
+                    ->trueLabel('Publicados')
+                    ->falseLabel('Borradores'),
+                TernaryFilter::make('featured')
+                    ->label('Destacado')
+                    ->placeholder('Todos')
+                    ->trueLabel('Solo destacados')
+                    ->falseLabel('No destacados'),
+                SelectFilter::make('category_id')
+                    ->label('Categoría')
+                    ->placeholder('Todas las categorías')
+                    ->options(function () {
+                        $clientId = Auth::guard('client')->id()
+                            ?? Auth::guard('client_user')->user()?->client_id;
+
+                        return Category::whereHas('site', fn (Builder $q) => $q->where('client_id', $clientId))
+                            ->orderBy('name')
+                            ->pluck('name', 'id');
+                    }),
+                TernaryFilter::make('category_id')
+                    ->label('¿Tiene categoría?')
+                    ->placeholder('Todos')
+                    ->trueLabel('Con categoría')
+                    ->falseLabel('Sin categoría')
+                    ->queries(
+                        true: fn (Builder $q) => $q->whereNotNull('category_id'),
+                        false: fn (Builder $q) => $q->whereNull('category_id'),
+                    ),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -53,6 +97,27 @@ class PostsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('assign_category')
+                        ->label('Asignar categoría')
+                        ->icon('heroicon-o-tag')
+                        ->form([
+                            Select::make('category_id')
+                                ->label('Categoría')
+                                ->placeholder('Sin categoría')
+                                ->options(function () {
+                                    $clientId = Auth::guard('client')->id()
+                                        ?? Auth::guard('client_user')->user()?->client_id;
+
+                                    return Category::whereHas('site', fn (Builder $q) => $q->where('client_id', $clientId))
+                                        ->orderBy('name')
+                                        ->pluck('name', 'id');
+                                })
+                                ->searchable(),
+                        ])
+                        ->action(function (Collection $records, array $data) {
+                            $records->each->update(['category_id' => $data['category_id'] ?? null]);
+                        })
+                        ->deselectRecordsAfterCompletion(),
                     DeleteBulkAction::make(),
                 ]),
             ]);

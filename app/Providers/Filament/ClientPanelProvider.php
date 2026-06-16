@@ -7,6 +7,7 @@ use App\Filament\Cliente\Pages\Login;
 use App\Http\Middleware\AuthenticateClientOrEditor;
 use App\Models\Client;
 use Awcodes\Curator\CuratorPlugin;
+use Nomanur\FilamentSeoPro\SeoPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Support\Icons\Heroicon;
@@ -76,6 +77,9 @@ class ClientPanelProvider extends PanelProvider
                 AccountWidget::class,
             ])
             ->plugins([
+                SeoPlugin::make()
+                    ->enableManagementPage(false)
+                    ->enableDashboardWidget(false),
                 CuratorPlugin::make()
                     ->label('Imagen')
                     ->pluralLabel('Mis Imágenes')

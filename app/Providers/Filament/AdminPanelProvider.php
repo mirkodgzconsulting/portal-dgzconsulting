@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use Awcodes\Curator\CuratorPlugin;
+use Nomanur\FilamentSeoPro\SeoPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Support\Enums\Width;
@@ -71,6 +72,7 @@ class AdminPanelProvider extends PanelProvider
                 AccountWidget::class,
             ])
             ->plugins([
+                SeoPlugin::make(),
                 CuratorPlugin::make()
                     ->label('Media')
                     ->pluralLabel('Biblioteca de medios')
