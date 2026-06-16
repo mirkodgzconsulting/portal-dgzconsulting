@@ -3,7 +3,7 @@ set -e
 
 echo "==> Generando .env desde variables de entorno..."
 if [ ! -f .env ]; then
-  printenv | grep -E "^APP_|^DB_|^SESSION_|^CACHE_|^LOG_|^AWS_|^FILESYSTEM_|^QUEUE_|^BROADCAST_" | while IFS= read -r line; do
+  printenv | grep -E "^APP_|^DB_|^SESSION_|^CACHE_|^LOG_|^AWS_|^R2_|^FILESYSTEM_|^QUEUE_|^BROADCAST_|^VITE_|^CURATOR_" | while IFS= read -r line; do
     key="${line%%=*}"
     val="${line#*=}"
     printf '%s="%s"\n' "$key" "$val"
