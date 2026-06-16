@@ -20,6 +20,10 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/database/*.sqlite
+
+# notas internas de migración (referencias a datos/clientes de Notion)
+/docs/
 /vendor
 _ide_helper.php
 Homestead.json

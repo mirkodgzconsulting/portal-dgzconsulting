@@ -1,0 +1,39 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+@font-face {
+    font-family: 'Roobert';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+    src: url('/fonts/filament/filament/inter/Roobert-Regular.woff2') format('woff2');
+}
+
+@theme {
+    --font-sans: 'Roobert', ui-sans-serif, system-ui, sans-serif;
+}
+
+.fi-main {
+    padding-inline: calc(var(--spacing) * 4) !important;
+}
+
+/* Curator list view: center thumbnail vertically */
+.curator-column img {
+    display: block;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+fi-ta-col:has(.curator-column) {
+    align-items: center;
+    align-self: center;
+}
+
+/* Curator grid view: hide text columns below image */
+.dgz-hidden-cell {
+    display: none !important;
+}
+
+

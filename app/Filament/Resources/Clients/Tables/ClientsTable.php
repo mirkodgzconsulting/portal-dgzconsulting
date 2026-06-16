@@ -8,6 +8,8 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class ClientsTable
@@ -25,6 +27,8 @@ class ClientsTable
                 TextColumn::make('email')
                     ->label('Email')
                     ->searchable(),
+                ToggleColumn::make('active')
+                    ->label('Activo'),
                 TextColumn::make('created_at')
                     ->label('Creado')
                     ->dateTime()
@@ -37,7 +41,9 @@ class ClientsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                TernaryFilter::make('active')
+                    ->label('Activo')
+                    ->default(true),
             ])
             ->recordActions([
                 ViewAction::make(),

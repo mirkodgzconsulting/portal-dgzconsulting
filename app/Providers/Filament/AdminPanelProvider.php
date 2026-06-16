@@ -2,17 +2,18 @@
 
 namespace App\Providers\Filament;
 
+use Awcodes\Curator\CuratorPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
+use Filament\Support\Enums\Width;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -28,11 +29,30 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
+            ->brandName('DGZ Consulting · Admin')
+            ->brandLogo(asset('DGZConsulting-Logo-Slogan-v2.png'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('Favicon-DGZConsulting-Squared.png'))
             ->colors([
-                'primary' => Color::hex('#0F65E6'),
+                'primary' => [
+                    50  => '#eff6ff',
+                    100 => '#dbeafe',
+                    200 => '#bfdbfe',
+                    300 => '#93c5fd',
+                    400 => '#60a5fa',
+                    500 => '#3b82f6',
+                    600 => '#0F65E6',
+                    700 => '#0d56c4',
+                    800 => '#0a3f8f',
+                    900 => '#082d66',
+                    950 => '#051c40',
+                ],
             ])
             ->defaultThemeMode(ThemeMode::Light)
+            ->sidebarWidth('15rem')
+            ->maxContentWidth(Width::Full)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -41,7 +61,17 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
+            ])
+            ->plugins([
+                CuratorPlugin::make()
+                    ->label('Media')
+                    ->pluralLabel('Biblioteca de medios')
+                    ->navigationIcon(Heroicon::OutlinedPhoto)
+                    ->navigationGroup('Contenido')
+                    ->navigationSort(2)
+                    ->showBadge(true)
+                    ->registerNavigation(true)
+                    ->curations(true),
             ])
             ->middleware([
                 EncryptCookies::class,

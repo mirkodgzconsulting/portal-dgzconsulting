@@ -1,0 +1,78 @@
+<?php
+
+namespace App\Providers\Filament;
+
+use App\Filament\Cliente\Pages\EditProfile;
+use Filament\Enums\ThemeMode;
+use Filament\Http\Middleware\Authenticate;
+use Filament\Support\Enums\Width;
+use Filament\Http\Middleware\AuthenticateSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Pages\Dashboard;
+use Filament\Panel;
+use Filament\PanelProvider;
+use Filament\Widgets\AccountWidget;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+
+class ClientPanelProvider extends PanelProvider
+{
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+            ->id('cliente')
+            ->path('area-cliente')
+            ->authGuard('client')
+            ->login()
+            ->profile(EditProfile::class)
+            ->brandName('DGZ Consulting · Portal Cliente')
+            ->brandLogo(asset('DGZConsulting-Logo-Slogan-v2.png'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('Favicon-DGZConsulting-Squared.png'))
+            ->colors([
+                'primary' => [
+                    50  => '#eff6ff',
+                    100 => '#dbeafe',
+                    200 => '#bfdbfe',
+                    300 => '#93c5fd',
+                    400 => '#60a5fa',
+                    500 => '#3b82f6',
+                    600 => '#0F65E6',
+                    700 => '#0d56c4',
+                    800 => '#0a3f8f',
+                    900 => '#082d66',
+                    950 => '#051c40',
+                ],
+            ])
+            ->defaultThemeMode(ThemeMode::Light)
+            ->sidebarWidth('15rem')
+            ->maxContentWidth(Width::Full)
+            ->viteTheme('resources/css/filament/cliente/theme.css')
+            ->discoverResources(in: app_path('Filament/Cliente/Resources'), for: 'App\Filament\Cliente\Resources')
+            ->pages([
+                Dashboard::class,
+            ])
+            ->widgets([
+                AccountWidget::class,
+            ])
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                PreventRequestForgery::class,
+                SubstituteBindings::class,
+                DisableBladeIconComponents::class,
+                DispatchServingFilamentEvent::class,
+            ])
+            ->authMiddleware([
+                Authenticate::class,
+            ]);
+    }
+}

@@ -12,12 +12,14 @@ class Site extends Model
         'client_id',
         'name',
         'domain',
+        'slug',
         'admin_url',
         'cms_username',
         'cms_password',
         'cms_type',
         'hosting_provider',
         'has_blog',
+        'notes',
     ];
 
     protected $casts = [
@@ -34,5 +36,10 @@ class Site extends Model
     public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class);
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
     }
 }

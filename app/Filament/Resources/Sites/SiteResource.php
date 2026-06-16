@@ -6,6 +6,7 @@ use App\Filament\Resources\Sites\Pages\CreateSite;
 use App\Filament\Resources\Sites\Pages\EditSite;
 use App\Filament\Resources\Sites\Pages\ListSites;
 use App\Filament\Resources\Sites\Pages\ViewSite;
+use App\Filament\Resources\Sites\RelationManagers\PostsRelationManager;
 use App\Filament\Resources\Sites\RelationManagers\SubscriptionsRelationManager;
 use App\Filament\Resources\Sites\Schemas\SiteForm;
 use App\Filament\Resources\Sites\Schemas\SiteInfolist;
@@ -16,12 +17,15 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class SiteResource extends Resource
 {
     protected static ?string $model = Site::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static string|UnitEnum|null $navigationGroup = 'CRM';
 
     protected static ?string $navigationLabel = 'Sitios';
 
@@ -48,6 +52,7 @@ class SiteResource extends Resource
     {
         return [
             SubscriptionsRelationManager::class,
+            PostsRelationManager::class,
         ];
     }
 
