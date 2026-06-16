@@ -10,4 +10,3 @@ storage/framework/
 storage/app/
 *.log
 tests/
-docker/
