@@ -4,12 +4,14 @@ namespace App\Filament\Resources\Posts\Schemas;
 
 use App\Models\Site;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -41,9 +43,10 @@ class PostForm
                     ->columnSpanFull(),
                 TextInput::make('cover_image')
                     ->label('Imagen de portada (URL)')
-                    ->placeholder('https://... o deja vacío para subir archivo')
+                    ->placeholder('https://res.cloudinary.com/... o https://pub-xxx.r2.dev/...')
                     ->url()
-                    ->helperText('Pega una URL de Cloudinary, R2 u otro servicio'),
+                    ->helperText('Sube la imagen en "Biblioteca de Medios", copia la URL y pégala aquí')
+                    ->columnSpanFull(),
                 TagsInput::make('tags')
                     ->label('Etiquetas'),
                 TextInput::make('author')

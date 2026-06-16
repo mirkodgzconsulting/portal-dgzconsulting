@@ -44,9 +44,10 @@ class PostForm
                     ->columnSpanFull(),
                 TextInput::make('cover_image')
                     ->label('Imagen de portada (URL)')
-                    ->placeholder('https://... pega la URL de tu imagen')
+                    ->placeholder('https://res.cloudinary.com/... o https://pub-xxx.r2.dev/...')
                     ->url()
-                    ->helperText('Pega una URL de Cloudinary, R2 u otro servicio'),
+                    ->helperText('Sube la imagen en "Mis Imágenes", copia la URL y pégala aquí')
+                    ->columnSpanFull(),
                 TagsInput::make('tags')
                     ->label('Etiquetas'),
                 TextInput::make('author')
