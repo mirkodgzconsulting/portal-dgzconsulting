@@ -28,7 +28,6 @@ su -s /bin/sh www-data -c "php artisan migrate --force"
 echo "==> Limpiando cache..."
 su -s /bin/sh www-data -c "php artisan config:clear"
 su -s /bin/sh www-data -c "php artisan cache:clear"
-su -s /bin/sh www-data -c "php artisan route:cache"
 
 echo "==> Iniciando nginx + php-fpm..."
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
