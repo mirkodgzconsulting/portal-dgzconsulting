@@ -1,6 +1,11 @@
 #!/bin/sh
 set -e
 
+echo "==> Generando .env desde variables de entorno..."
+if [ ! -f .env ]; then
+  printenv | grep -E "^APP_|^DB_|^SESSION_|^CACHE_|^LOG_|^AWS_|^FILESYSTEM_|^QUEUE_|^BROADCAST_" > .env
+fi
+
 echo "==> Preparando directorios..."
 mkdir -p database \
          storage/framework/cache/data \
