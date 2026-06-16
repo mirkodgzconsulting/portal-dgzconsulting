@@ -29,7 +29,6 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->brandName('DGZ Consulting · Admin')
             ->brandLogo(asset('DGZConsulting-Logo-Slogan-v2.png'))
