@@ -16,7 +16,7 @@ RUN apk add --no-cache \
 
 # PHP extensions
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype \
-    && docker-php-ext-install pdo_sqlite opcache pcntl gd intl zip
+    && docker-php-ext-install pdo_sqlite pdo_mysql opcache pcntl gd intl zip
 
 # OPcache tuned for production
 RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
