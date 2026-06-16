@@ -52,6 +52,28 @@ Post (solo si Site.has_blog = true)
  - title, slug, description, content, cover_image, tags, pubDate, published
 ```
 
+## Estado actual (2026-06-15)
+
+**Fase 1 completada y con datos reales importados** desde el export de Notion:
+- Panel `/admin` funcionando, color de marca `#0F65E6`, tema claro por defecto
+  (con toggle a oscuro disponible).
+- Comando `php artisan notion:import` (en `app/Console/Commands/`) importó
+  **32 clientes, 39 sitios, 31 suscripciones** a `database/database.sqlite`
+  (gitignored, contiene credenciales reales aunque cifradas).
+- Repo conectado a `https://github.com/mirkodgzconsulting/portal-dgzconsulting.git`
+  (rama `main`).
+
+**Contexto completo de la migración + 2 pendientes que necesitan una
+decisión** (Sebastian Rodriguez / colisión de dominio con Dayana Cuba, y un
+sitio "IngenieriaSGIN" duplicado bajo Edgar Aranibar): ver
+[`docs/MIGRACION-NOTION-CONTEXTO.md`](docs/MIGRACION-NOTION-CONTEXTO.md)
+(no está en git, son notas internas con referencias a datos de clientes).
+
+**Siguiente paso lógico**: revisar/completar los datos importados en el panel
+`/admin` (emails reales en vez de placeholders `@pendiente.dgzconsulting.com`,
+precios en 0, `hosting_provider` faltantes, los 2 pendientes de arriba), y
+luego arrancar **Fase 2** (portal cliente).
+
 ## Roadmap por fases
 
 1. **Fase 1** — `Client`, `Site`, `Subscription` + panel `/admin`. Esto ya reemplaza
