@@ -51,7 +51,7 @@ SQL);
 
         // --- SITES (username/password omitted - encrypted with old APP_KEY, must re-enter) ---
         DB::unprepared(<<<'SQL'
-INSERT INTO `sites` (`id`,`client_id`,`name`,`domain`,`slug`,`login_url`,`username`,`password`,`platform`,`host`,`has_blog`,`notes`,`created_at`,`updated_at`) VALUES
+INSERT INTO `sites` (`id`,`client_id`,`name`,`domain`,`slug`,`admin_url`,`username`,`password`,`platform`,`host`,`has_blog`,`notes`,`created_at`,`updated_at`) VALUES
 (1,3,'Kaluaarauz','kaluaarauz.com',NULL,'https://kaluaarauz.com/masking1515',NULL,NULL,'WordPress','SiteGround',0,NULL,'2026-06-15 13:35:55','2026-06-15 13:35:55'),
 (2,4,'JhoselinsWorld','jhoselinsworld.com',NULL,'https://jhoselinsworld.com/masking1515',NULL,NULL,'WordPress','SiteGround',0,NULL,'2026-06-15 13:35:55','2026-06-15 13:35:55'),
 (3,5,'PabloPinxit','pablopinxit.com',NULL,'https://pablopinxit.com/masking1515',NULL,NULL,'WordPress','SiteGround',0,NULL,'2026-06-15 13:35:55','2026-06-15 13:35:55'),
