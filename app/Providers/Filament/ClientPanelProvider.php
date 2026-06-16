@@ -3,8 +3,10 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Cliente\Pages\EditProfile;
+use Awcodes\Curator\CuratorPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
+use Filament\Support\Icons\Heroicon;
 use Filament\Support\Enums\Width;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -59,6 +61,18 @@ class ClientPanelProvider extends PanelProvider
             ])
             ->widgets([
                 AccountWidget::class,
+            ])
+            ->plugins([
+                CuratorPlugin::make()
+                    ->label('Imagen')
+                    ->pluralLabel('Mis Imágenes')
+                    ->navigationIcon(Heroicon::OutlinedPhoto)
+                    ->navigationGroup('Contenido')
+                    ->navigationSort(2)
+                    ->disk('r2')
+                    ->visibility('public')
+                    ->model(\App\Models\Media::class)
+                    ->tableModifyQueryUsing(fn ($query) => $query->where('client_id', auth()->id())),
             ])
             ->middleware([
                 EncryptCookies::class,

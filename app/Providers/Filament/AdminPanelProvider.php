@@ -71,7 +71,10 @@ class AdminPanelProvider extends PanelProvider
                     ->navigationSort(2)
                     ->showBadge(true)
                     ->registerNavigation(true)
-                    ->curations(true),
+                    ->curations(true)
+                    ->disk('r2')
+                    ->visibility('public')
+                    ->model(\App\Models\Media::class),
             ])
             ->middleware([
                 EncryptCookies::class,

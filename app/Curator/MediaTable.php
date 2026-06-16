@@ -2,6 +2,7 @@
 
 namespace App\Curator;
 
+use App\Models\Client;
 use Awcodes\Curator\Components\Tables\CuratorColumn;
 use Awcodes\Curator\Facades\Curator;
 use Filament\Actions\DeleteAction;
@@ -9,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\Layout\View;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class MediaTable
@@ -23,6 +25,12 @@ class MediaTable
                     ? static::getGridColumns()
                     : static::getListColumns(),
             )
+            ->filters([
+                SelectFilter::make('client_id')
+                    ->label('Cliente')
+                    ->options(Client::orderBy('name')->pluck('name', 'id'))
+                    ->placeholder('Todos los clientes'),
+            ])
             ->searchable(['title', 'caption', 'description'])
             ->recordActions([
                 EditAction::make(),
@@ -56,6 +64,11 @@ class MediaTable
                 ->imageSize(40)
                 ->alignCenter()
                 ->width('60px'),
+            TextColumn::make('client.name')
+                ->label('Cliente')
+                ->badge()
+                ->color('info')
+                ->sortable(),
             TextColumn::make('name')
                 ->label(trans('curator::tables.columns.name'))
                 ->limit(50)
@@ -85,7 +98,6 @@ class MediaTable
     {
         return [
             View::make('curator::components.tables.grid-column'),
-            // These columns are needed for search/sort but hidden visually via CSS
             TextColumn::make('name')
                 ->label(trans('curator::tables.columns.name'))
                 ->searchable()
