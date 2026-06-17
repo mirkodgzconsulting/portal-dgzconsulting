@@ -40,10 +40,10 @@ class ClientPanelProvider extends PanelProvider
             ->authGuard('client')
             ->login(Login::class)
             ->profile(EditProfile::class)
-            ->brandName('DGZ Consulting · Portal Cliente')
-            ->brandLogo(asset('DGZConsulting-Logo-Slogan-v2.png'))
-            ->brandLogoHeight('2.5rem')
-            ->favicon(asset('Favicon-DGZConsulting-Squared.png'))
+            ->brandName('DGZ Consulting')
+            ->brandLogo(view('components.brand-logo'))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('icono-dgzconsulting-png.png'))
             ->viteTheme('resources/css/filament/cliente/theme.css')
             ->colors([
                 'primary' => [
@@ -90,8 +90,8 @@ class ClientPanelProvider extends PanelProvider
                     ->enableManagementPage(false)
                     ->enableDashboardWidget(false),
                 CuratorPlugin::make()
-                    ->label('Imagen')
-                    ->pluralLabel('Mis Imágenes')
+                    ->label('Media')
+                    ->pluralLabel('Media Library')
                     ->navigationIcon('geist-image')
                     ->navigationGroup('Contenido')
                     ->navigationSort(2),

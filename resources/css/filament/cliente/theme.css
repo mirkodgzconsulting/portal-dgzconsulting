@@ -9,6 +9,10 @@
     --radius-lg: 6px;
 }
 
+/* ── Brand logo dark/light ── */
+:root { --logo-text-color: #1d212b; }
+.dark { --logo-text-color: #ededed; }
+
 /* ── Vercel tight letter-spacing ── */
 body {
     letter-spacing: -0.28px;

@@ -21,10 +21,6 @@
                             Bienvenido a tu panel de gestión.
                         @endif
                     </p>
-                    <div class="mt-2" style="font-family: 'Urbanist', sans-serif; line-height: 1.1;">
-                        <div class="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">DGZ</div>
-                        <div class="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">Consulting.</div>
-                    </div>
                 </div>
             </div>
 

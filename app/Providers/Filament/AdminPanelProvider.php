@@ -34,10 +34,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
-            ->brandName('DGZ Consulting · Admin')
-            ->brandLogo(asset('DGZConsulting-Logo-Slogan-v2.png'))
-            ->brandLogoHeight('2.5rem')
-            ->favicon(asset('Favicon-DGZConsulting-Squared.png'))
+            ->brandName('DGZ Consulting')
+            ->brandLogo(view('components.brand-logo'))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('icono-dgzconsulting-png.png'))
             ->colors([
                 'primary' => [
                     50  => '#eff6ff',
