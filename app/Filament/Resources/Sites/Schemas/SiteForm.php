@@ -39,6 +39,9 @@ class SiteForm
             Toggle::make('has_blog')
                 ->label('Tiene módulo de blog')
                 ->helperText('Activa la edición de posts en el portal del cliente'),
+            Toggle::make('has_portfolio')
+                ->label('Tiene módulo de portfolio')
+                ->helperText('Activa la gestión de galerías en el portal del cliente'),
 
             Textarea::make('notes')
                 ->label('Notas internas')

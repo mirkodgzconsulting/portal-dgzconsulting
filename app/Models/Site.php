@@ -19,6 +19,7 @@ class Site extends Model
         'cms_type',
         'hosting_provider',
         'has_blog',
+        'has_portfolio',
         'notes',
     ];
 
@@ -26,6 +27,7 @@ class Site extends Model
         'cms_username' => 'encrypted',
         'cms_password' => 'encrypted',
         'has_blog' => 'boolean',
+        'has_portfolio' => 'boolean',
     ];
 
     public function client(): BelongsTo
@@ -46,5 +48,10 @@ class Site extends Model
     public function categories(): HasMany
     {
         return $this->hasMany(Category::class);
+    }
+
+    public function portfolioCategories(): HasMany
+    {
+        return $this->hasMany(PortfolioCategory::class);
     }
 }
