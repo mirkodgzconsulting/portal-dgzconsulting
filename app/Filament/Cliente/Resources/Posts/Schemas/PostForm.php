@@ -2,17 +2,20 @@
 
 namespace App\Filament\Cliente\Resources\Posts\Schemas;
 
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\ViewField;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Nomanur\FilamentSeoPro\Forms\SeoSection;
@@ -104,16 +107,43 @@ class PostForm
                 Section::make('Imagen de portada')
                     ->columnSpan(2)
                     ->schema([
+                        Placeholder::make('cover_preview')
+                            ->label('')
+                            ->content(fn ($record) => $record?->getFirstMediaUrl('cover')
+                                ? new HtmlString(
+                                    '<div class="flex items-center gap-4">'
+                                    . '<img src="' . e($record->getFirstMediaUrl('cover')) . '" style="max-height:150px;object-fit:contain;border-radius:8px;">'
+                                    . '</div>'
+                                )
+                                : ($record?->cover_image
+                                    ? new HtmlString('<img src="' . e($record->cover_image) . '" style="max-height:150px;object-fit:contain;border-radius:8px;">')
+                                    : null))
+                            ->visibleOn('edit'),
                         SpatieMediaLibraryFileUpload::make('cover')
                             ->collection('cover')
-                            ->label('Imagen de portada')
+                            ->label('Subir nueva imagen')
                             ->image()
                             ->imageEditor()
                             ->maxSize(5120)
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                            ->helperText('JPG, PNG, WebP — máx. 5 MB. Drag & drop o Browse.')
+                            ->helperText('JPG, PNG, WebP — máx. 5 MB')
                             ->disk('r2')
                             ->visibility('public'),
+                        Actions::make([
+                            Action::make('browse_media')
+                                ->label('Elegir de biblioteca')
+                                ->icon('heroicon-o-photo')
+                                ->color('gray')
+                                ->modalHeading('Featured Image')
+                                ->modalWidth('5xl')
+                                ->modalContent(fn () => view('livewire.media-picker-inline'))
+                                ->modalSubmitAction(false)
+                                ->modalCancelActionLabel('Cerrar'),
+                        ]),
+                        TextInput::make('cover_image')
+                            ->label('URL de imagen (desde biblioteca)')
+                            ->helperText('Se llena automáticamente al seleccionar de la biblioteca')
+                            ->url(),
                     ]),
 
                 // ── SEO (ancho completo) ───────────────────────────────────

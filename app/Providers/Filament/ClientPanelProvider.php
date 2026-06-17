@@ -86,16 +86,13 @@ class ClientPanelProvider extends PanelProvider
                 RecentPostsWidget::class,
                 SubscriptionsWidget::class,
             ])
+            ->discoverPages(in: app_path('Filament/Cliente/Pages'), for: 'App\Filament\Cliente\Pages')
             ->plugins([
                 SeoPlugin::make()
                     ->enableManagementPage(false)
                     ->enableDashboardWidget(false),
                 CuratorPlugin::make()
-                    ->label('Media')
-                    ->pluralLabel('Media Library')
-                    ->navigationIcon('geist-image')
-                    ->navigationGroup('Contenido')
-                    ->navigationSort(2),
+                    ->registerNavigation(false),
             ])
             ->middleware([
                 EncryptCookies::class,

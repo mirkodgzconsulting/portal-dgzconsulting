@@ -10,10 +10,17 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Client extends Model implements AuthenticatableContract, FilamentUser, HasName
+class Client extends Model implements AuthenticatableContract, FilamentUser, HasName, HasMedia
 {
-    use Authenticatable, Notifiable;
+    use Authenticatable, InteractsWithMedia, Notifiable;
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('library');
+    }
 
     protected $fillable = [
         'name',
