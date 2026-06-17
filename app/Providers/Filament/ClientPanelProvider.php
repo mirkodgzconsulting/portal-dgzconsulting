@@ -107,10 +107,10 @@ class ClientPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
-                AuthenticateClientOrEditor::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
+                AuthenticateClientOrEditor::class,
             ]);
     }
 }
