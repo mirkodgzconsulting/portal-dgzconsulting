@@ -1,17 +1,31 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         <div class="space-y-6">
-            <div>
-                <h2 class="text-xl font-semibold text-zinc-900 dark:text-white">
-                    ¡Hola, {{ $userName }}!
-                </h2>
-                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                    @if($isEditor)
-                        Panel de edición — gestiona los artículos del blog.
-                    @else
-                        Bienvenido a tu panel de gestión.
-                    @endif
-                </p>
+            <div class="flex items-center gap-4">
+                <lord-icon
+                    src="https://cdn.lordicon.com/rpviwvwn.json"
+                    trigger="hover"
+                    stroke="light"
+                    state="hover-rotate-up-to-down"
+                    colors="primary:#0070f3,secondary:#71717a"
+                    style="width:48px;height:48px">
+                </lord-icon>
+                <div>
+                    <h2 class="text-xl font-semibold text-zinc-900 dark:text-white">
+                        ¡Hola, {{ $userName }}!
+                    </h2>
+                    <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+                        @if($isEditor)
+                            Panel de edición — gestiona los artículos del blog.
+                        @else
+                            Bienvenido a tu panel de gestión.
+                        @endif
+                    </p>
+                    <div class="mt-2" style="font-family: 'Urbanist', sans-serif; line-height: 1.1;">
+                        <div class="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">DGZ</div>
+                        <div class="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">Consulting.</div>
+                    </div>
+                </div>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">

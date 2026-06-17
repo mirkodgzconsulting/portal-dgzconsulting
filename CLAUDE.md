@@ -223,7 +223,7 @@ Includes: `slug, title, description, content, tags, author, pubDate, cover_image
 - [ ] Client dashboard welcome page (currently empty)
 - [x] Post preview — botón "Vista previa" en EditPost, abre `/preview/post/{id}` en nueva pestaña
 - [x] Word count / reading time — Placeholder reactivo debajo del RichEditor (200 wpm)
-- [ ] Auto sitemap trigger on publish (currently requires manual Astro redeploy)
+- [x] Auto sitemap — no action needed, Astro SSR regenerates dynamically
 
 ---
 

@@ -14,7 +14,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
-use CodeWithDennis\FilamentLucideIcons\Enums\LucideIcon;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Support\Facades\Auth;
@@ -78,7 +77,7 @@ class AdminPanelProvider extends PanelProvider
                 CuratorPlugin::make()
                     ->label('Media')
                     ->pluralLabel('Biblioteca de medios')
-                    ->navigationIcon(LucideIcon::Image)
+                    ->navigationIcon('geist-image')
                     ->navigationGroup('Contenido')
                     ->navigationSort(2)
                     ->showBadge(true)

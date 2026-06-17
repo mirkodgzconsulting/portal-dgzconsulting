@@ -13,7 +13,7 @@ use App\Models\Post;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use CodeWithDennis\FilamentLucideIcons\Enums\LucideIcon;
+
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +22,7 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static string|BackedEnum|null $navigationIcon = LucideIcon::FileText;
+    protected static string|BackedEnum|null $navigationIcon = "geist-file-text";
 
     protected static ?string $navigationLabel = 'Mis Posts';
 

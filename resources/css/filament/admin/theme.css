@@ -1,5 +1,5 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Urbanist:wght@400;500;600;700;800&display=swap');
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
@@ -14,7 +14,12 @@ body {
     letter-spacing: -0.28px;
 }
 h1, h2, h3, h4 {
+    font-family: 'Urbanist', sans-serif;
     letter-spacing: -0.02em;
+    color: #1d212b;
+}
+.dark h1, .dark h2, .dark h3, .dark h4 {
+    color: #ededed;
 }
 
 /* ── Content area: 24px padding, centered max-width ── */
@@ -31,11 +36,14 @@ h1, h2, h3, h4 {
 .fi-sidebar-nav {
     padding-inline: 12px !important;
 }
+.fi-sidebar-nav {
+    font-family: 'Urbanist', sans-serif;
+}
 .fi-sidebar-item-btn {
     height: 36px;
     border-radius: 6px;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 600 !important;
     padding-inline: 8px;
     gap: 8px;
     transition: all 150ms ease;
@@ -44,8 +52,15 @@ h1, h2, h3, h4 {
     width: 18px;
     height: 18px;
 }
+.fi-sidebar-item-icon svg,
+.fi-sidebar-item-icon svg * {
+    stroke-width: 1px !important;
+}
 .fi-sidebar-item-btn[data-active] {
-    font-weight: 500;
+    font-weight: 700 !important;
+}
+.fi-sidebar-item-label {
+    font-weight: 600 !important;
 }
 
 /* ── Sidebar: group separators (Vercel style) ── */

@@ -11,7 +11,7 @@ use App\Models\User;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use CodeWithDennis\FilamentLucideIcons\Enums\LucideIcon;
+
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -19,7 +19,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = LucideIcon::UsersRound;
+    protected static string|BackedEnum|null $navigationIcon = "geist-users";
 
     protected static string|UnitEnum|null $navigationGroup = 'Configuración';
 

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use BladeUI\Icons\Factory as IconFactory;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,6 +17,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        //
+        $this->callAfterResolving(IconFactory::class, function (IconFactory $factory) {
+            $factory->add('geist', [
+                'path' => resource_path('svg/geist'),
+                'prefix' => 'geist',
+            ]);
+        });
     }
 }

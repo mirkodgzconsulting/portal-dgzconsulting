@@ -10,7 +10,6 @@ use Awcodes\Curator\CuratorPlugin;
 use Nomanur\FilamentSeoPro\SeoPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
-use CodeWithDennis\FilamentLucideIcons\Enums\LucideIcon;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -73,6 +72,10 @@ class ClientPanelProvider extends PanelProvider
                         ? '<div class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200">' . e(Auth::guard('client_user')->user()->name) . ' <span class="ml-1 text-xs text-gray-400">(editor)</span></div>'
                         : '')
             )
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn () => '<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script src="https://cdn.lordicon.com/lordicon.js"></script>'
+            )
             ->discoverResources(in: app_path('Filament/Cliente/Resources'), for: 'App\Filament\Cliente\Resources')
             ->pages([
                 Dashboard::class,
@@ -89,7 +92,7 @@ class ClientPanelProvider extends PanelProvider
                 CuratorPlugin::make()
                     ->label('Imagen')
                     ->pluralLabel('Mis Imágenes')
-                    ->navigationIcon(LucideIcon::Image)
+                    ->navigationIcon('geist-image')
                     ->navigationGroup('Contenido')
                     ->navigationSort(2),
             ])
