@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:geist-ui.dev)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(composer search *)",
+      "WebFetch(domain:unpkg.com)",
+      "Bash(sed -i '' 's/use CodeWithDennis\\\\\\\\FilamentLucideIcons\\\\\\\\Enums\\\\\\\\LucideIcon;//' app/Filament/Resources/Clients/ClientResource.php)",
+      "Bash(sed -i '' 's/LucideIcon::UsersRound/\"geist-users\"/' app/Filament/Resources/Clients/ClientResource.php)",
+      "Bash(sed -i '' 's/use CodeWithDennis\\\\\\\\FilamentLucideIcons\\\\\\\\Enums\\\\\\\\LucideIcon;//' app/Filament/Resources/Posts/PostResource.php)",
+      "Bash(sed -i '' 's/LucideIcon::FileText/\"geist-file-text\"/' app/Filament/Resources/Posts/PostResource.php)",
+      "Bash(sed -i '' 's/use CodeWithDennis\\\\\\\\FilamentLucideIcons\\\\\\\\Enums\\\\\\\\LucideIcon;//' app/Filament/Resources/Sites/SiteResource.php)",
+      "Bash(curl -s http://localhost:8000/api/sites/pablopinxit/portfolio)",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\)['data']; [print\\(f\\\\\"{c['name']}: {len\\(c['items']\\)} items, cover: {'yes' if c['cover_image'] else 'no'}\\\\\"\\) for c in data]\")",
+      "Bash(mkdir -p \"/Users/mirkodgz/Projects/Pablo Pinxit/pablopinxit-sito/src/lib\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(len\\(d['data']\\), 'categories'\\)\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4321)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://crm.dgzconsulting.com/api/sites/pablopinxit/portfolio)",
+      "Bash(python3 -c \"import json,sys; [print\\(f\\\\\"{c['title']}: {c['coverImage']}\\\\\"\\) for c in json.load\\(sys.stdin\\)]\")",
+      "Bash(curl -s -b \"/tmp/ana_cookies\" -c \"/tmp/ana_cookies\" \"http://localhost:8000/area-cliente/login\")",
+      "Bash(curl -s -b /tmp/ana_cookies http://localhost:8000/area-cliente/login)",
+      "Bash(curl -s -b \"/tmp/ana_cookies\" -c \"/tmp/ana_cookies\" -X POST \"http://localhost:8000/area-cliente/login\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"email=info@sabiduriadealma.com&password=test&_token=$\\(curl -s -b /tmp/ana_cookies http://localhost:8000/area-cliente/login)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000)"
+    ],
+    "additionalDirectories": [
+      "/Users/mirkodgz/Projects/Pablo Pinxit/pablopinxit-sito/src",
+      "/Users/mirkodgz/Projects/Pablo Pinxit/pablopinxit-sito"
+    ]
+  }
+}
