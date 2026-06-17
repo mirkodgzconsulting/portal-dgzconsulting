@@ -15,10 +15,9 @@ class Media extends BaseMedia
     protected static function booted(): void
     {
         static::addGlobalScope('client_media', function (Builder $query) {
-            if (Auth::guard('web')->check()) return;
-
-            $clientId = Auth::guard('client')->id()
-                ?? Auth::guard('client_user')->user()?->client_id;
+            $clientId = app()->bound('client_panel_client_id')
+                ? app('client_panel_client_id')
+                : null;
 
             if ($clientId) {
                 $query->where('client_id', $clientId);

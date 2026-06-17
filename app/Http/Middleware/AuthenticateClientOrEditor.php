@@ -10,8 +10,12 @@ class AuthenticateClientOrEditor
 {
     public function handle(Request $request, Closure $next): mixed
     {
-        // Si ya está autenticado en alguno de los dos guards, continuar
         if (Auth::guard('client')->check() || Auth::guard('client_user')->check()) {
+            $clientId = Auth::guard('client')->id()
+                ?? Auth::guard('client_user')->user()?->client_id;
+
+            app()->instance('client_panel_client_id', $clientId);
+
             return $next($request);
         }
 
