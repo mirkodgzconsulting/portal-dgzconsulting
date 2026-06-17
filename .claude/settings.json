@@ -20,7 +20,9 @@
       "Bash(curl -s -b \"/tmp/ana_cookies\" -c \"/tmp/ana_cookies\" \"http://localhost:8000/area-cliente/login\")",
       "Bash(curl -s -b /tmp/ana_cookies http://localhost:8000/area-cliente/login)",
       "Bash(curl -s -b \"/tmp/ana_cookies\" -c \"/tmp/ana_cookies\" -X POST \"http://localhost:8000/area-cliente/login\" -H \"Content-Type: application/x-www-form-urlencoded\" -d \"email=info@sabiduriadealma.com&password=test&_token=$\\(curl -s -b /tmp/ana_cookies http://localhost:8000/area-cliente/login)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8000)",
+      "Bash(git -C /Users/mirkodgz/Projects/Mirko/dgz-crm-portal add -A)",
+      "Bash(git -C /Users/mirkodgz/Projects/Mirko/dgz-crm-portal commit -m ' *)"
     ],
     "additionalDirectories": [
       "/Users/mirkodgz/Projects/Pablo Pinxit/pablopinxit-sito/src",

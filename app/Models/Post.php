@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Nomanur\FilamentSeoPro\Traits\HasSeo;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Post extends Model
+class Post extends Model implements HasMedia
 {
-    use HasSeo;
+    use HasSeo, InteractsWithMedia;
     protected $fillable = [
         'site_id',
         'category_id',
@@ -52,8 +54,18 @@ class Post extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('cover')->singleFile();
+    }
+
     public function getCoverImageUrlAttribute(): ?string
     {
+        $mediaUrl = $this->getFirstMediaUrl('cover');
+        if ($mediaUrl) {
+            return $mediaUrl;
+        }
+
         if (! $this->cover_image) {
             return null;
         }

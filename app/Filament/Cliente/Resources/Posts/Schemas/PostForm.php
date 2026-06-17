@@ -2,11 +2,11 @@
 
 namespace App\Filament\Cliente\Resources\Posts\Schemas;
 
-use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
@@ -104,31 +104,16 @@ class PostForm
                 Section::make('Imagen de portada')
                     ->columnSpan(2)
                     ->schema([
-                        Placeholder::make('cover_preview')
-                            ->label('Imagen actual')
-                            ->content(fn ($record) => $record?->cover_image
-                                ? new HtmlString('<img src="' . e($record->cover_image) . '" style="max-height:150px;object-fit:contain;border-radius:8px;">')
-                                : new HtmlString('<span style="color:#999;">Sin imagen</span>'))
-                            ->visibleOn('edit'),
-                        CuratorPicker::make('cover_media_id')
-                            ->label('Elegir de Media Library')
-                            ->buttonLabel('Seleccionar imagen existente')
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                        SpatieMediaLibraryFileUpload::make('cover')
+                            ->collection('cover')
+                            ->label('Imagen de portada')
+                            ->image()
+                            ->imageEditor()
                             ->maxSize(5120)
-                            ->dehydrated(false)
-                            ->afterStateUpdated(function ($state, callable $set) {
-                                if ($state) {
-                                    $media = \App\Models\Media::withoutGlobalScopes()->find($state);
-                                    if ($media) {
-                                        $set('cover_image', $media->url);
-                                    }
-                                }
-                            })
-                            ->live(),
-                        TextInput::make('cover_image')
-                            ->label('URL de imagen')
-                            ->helperText('Se llena al seleccionar. También puedes pegar una URL externa.')
-                            ->url(),
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                            ->helperText('JPG, PNG, WebP — máx. 5 MB. Drag & drop o Browse.')
+                            ->disk('r2')
+                            ->visibility('public'),
                     ]),
 
                 // ── SEO (ancho completo) ───────────────────────────────────
