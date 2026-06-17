@@ -133,6 +133,20 @@ Manual SEO columns removed from `posts` via migration `2026_06_18_000001`. Plugi
 - Filtered to only show categories belonging to authenticated client's sites
 - `getEloquentQuery()` uses `whereHas('site', fn($q) => $q->where('client_id', $clientId))`
 
+### Categories per site
+
+**ModeloOctatrico** (Ana Orero, site_id: 49):
+- Vibración y Sonido (11 posts) — cimática, frecuencia, sonido, música, octava
+- Matemáticas y Geometría (4 posts) — Pi, raíz de 2, 1.08, arquetipos numéricos
+- Cosmología (3 posts) — materia oscura, gravedad, luz
+- Fundamentos (1 post) — qué es una Octátrica
+
+**ConkretPeru** (Joel Carbajal, site_id: 50):
+- Concreto Premezclado (8 posts) — tipos, rendimiento, comparativas, f'c
+- Mortero (7 posts) — fino/grueso, reparación, tarrajeo
+- Shotcrete (2 posts) — minería, construcción civil
+- Guías Técnicas (3 posts) — guías generales, costos
+
 ### Astro category pages
 - Generated at build time via `getStaticPaths()` + `getCrmCategories()`
 - Route: `/blog/categoria/[slug]`
@@ -205,10 +219,10 @@ Includes: `slug, title, description, content, tags, author, pubDate, cover_image
 
 ## Pending / To Do (as of 2026-06-17)
 - [x] Resolve SEO column conflict — manual columns dropped, plugin `seo_meta` is the source of truth
-- [ ] Categorize existing 41 posts (all have `category_id = NULL`) — use bulk assign
+- [x] Categorize all 39 posts — 8 categories created, all posts assigned
 - [ ] Client dashboard welcome page (currently empty)
-- [ ] Post preview before publishing
-- [ ] Word count / reading time in editor
+- [x] Post preview — botón "Vista previa" en EditPost, abre `/preview/post/{id}` en nueva pestaña
+- [x] Word count / reading time — Placeholder reactivo debajo del RichEditor (200 wpm)
 - [ ] Auto sitemap trigger on publish (currently requires manual Astro redeploy)
 
 ---
