@@ -110,31 +110,24 @@ class PostForm
                                 ? new HtmlString('<img src="' . e($record->cover_image) . '" style="max-height:150px;object-fit:contain;border-radius:8px;">')
                                 : new HtmlString('<span style="color:#999;">Sin imagen</span>'))
                             ->visibleOn('edit'),
-                        FileUpload::make('cover_upload')
-                            ->label('Subir nueva imagen')
-                            ->image()
-                            ->maxSize(5120)
+                        CuratorPicker::make('cover_media_id')
+                            ->label('Elegir de Media Library')
+                            ->buttonLabel('Seleccionar imagen existente')
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                            ->helperText('JPG, PNG, WebP — máx. 5 MB. Se sube automáticamente.')
-                            ->disk('local')
-                            ->visibility('public')
+                            ->maxSize(5120)
                             ->dehydrated(false)
-                            ->saveUploadedFileUsing(function ($file, $get, callable $set) {
-                                $clientId = Auth::guard('client')->id()
-                                    ?? Auth::guard('client_user')->user()?->client_id;
-                                $site = \App\Models\Site::find($get('site_id'));
-                                $siteSlug = $site?->slug ?? 'general';
-                                $ext = $file->getClientOriginalExtension() ?: 'jpg';
-                                $filename = Str::uuid() . '.' . $ext;
-                                $path = "clients/{$clientId}/{$siteSlug}/{$filename}";
-                                Storage::disk('r2')->put($path, file_get_contents($file->getRealPath()), 'public');
-                                $url = Storage::disk('r2')->url($path);
-                                $set('cover_image', $url);
-                                return $url;
-                            }),
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                if ($state) {
+                                    $media = \App\Models\Media::withoutGlobalScopes()->find($state);
+                                    if ($media) {
+                                        $set('cover_image', $media->url);
+                                    }
+                                }
+                            })
+                            ->live(),
                         TextInput::make('cover_image')
                             ->label('URL de imagen')
-                            ->helperText('Se llena al subir. También puedes pegar una URL externa.')
+                            ->helperText('Se llena al seleccionar. También puedes pegar una URL externa.')
                             ->url(),
                     ]),
 
