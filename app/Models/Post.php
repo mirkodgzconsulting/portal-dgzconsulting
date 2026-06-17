@@ -24,14 +24,6 @@ class Post extends Model
         'pub_date',
         'published',
         'featured',
-        'seo_title',
-        'seo_description',
-        'focus_keyword',
-        'canonical_url',
-        'og_title',
-        'og_description',
-        'og_image',
-        'robots',
     ];
 
     protected $casts = [

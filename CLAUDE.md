@@ -116,8 +116,8 @@ Grid::make(10) → [
   - Admin: `SeoPlugin::make()` (full features)
   - Client: `SeoPlugin::make()->enableManagementPage(false)->enableDashboardWidget(false)`
 
-### ⚠️ Known conflict (unresolved)
-`posts` table has manual SEO columns (`seo_title`, `seo_description`, `focus_keyword`, `canonical_url`, `og_title`, `og_description`, `og_image`, `robots`) added via migration `2026_06_16_230034`. The plugin uses `seo_meta` table instead. These manual columns are redundant. Decision pending: remove migration + columns, or keep as fallback.
+### SEO columns — resolved
+Manual SEO columns removed from `posts` via migration `2026_06_18_000001`. Plugin `nomanur/filament-seo-pro` uses `seo_meta` table (polymorphic via `HasSeo` trait) as single source of truth.
 
 ---
 
@@ -140,23 +140,16 @@ Grid::make(10) → [
 
 ---
 
-## Sub-users / Editors (ClientUser)
+## Sub-users / Editors (ClientUser) — OCULTO (plan futuro)
 
-### Model & Auth
-- `ClientUser` — editor accounts linked to a `Client` via `client_id`
-- Guard `client_user` in `config/auth.php` (provider `client_users`, model `ClientUser`)
-- Custom `Login` page at `app/Filament/Cliente/Pages/Login.php` tries `client` guard first, then `client_user`
-- `AuthenticateClientOrEditor` middleware allows both guards into `/area-cliente`
+Feature completa pero desactivada (`shouldRegisterNavigation: false`, `canAccess: false`).
+Ver plan detallado para reactivar: `memory/project_editors_plan.md`
 
-### Navigation visibility
-- **Client (owner)**: sees everything — Posts, Categories, Images, Sites, Subscriptions, "Mis Editores"
-- **ClientUser (editor)**: only sees Posts (Sites, Subscriptions, Editores hidden via `shouldRegisterNavigation()`)
-- `PostResource` resolves `client_id` from either guard: `Auth::guard('client')->id() ?? Auth::guard('client_user')->user()?->client_id`
-
-### Resources
-- Admin: `app/Filament/Resources/ClientUsers/ClientUserResource.php` — manages all editors
-- Client: `app/Filament/Cliente/Resources/ClientUsers/ClientUserResource.php` — client creates own editors
-- `mutateFormDataBeforeCreate` lives in `Pages/CreateClientUser.php` (not the Resource)
+### What exists (hidden)
+- Table `client_users`, model `ClientUser`, guard `client_user`
+- Multi-guard login, middleware `AuthenticateClientOrEditor`
+- Resources in both admin and client panels (hidden)
+- Navigation visibility logic in Sites/Subscriptions/Posts
 
 ---
 
@@ -166,8 +159,8 @@ Contenido
   ├── Mis Posts (sort 1)
   ├── Categorías (sort 2)  [Client CategoryResource]
   └── Mis Imágenes (sort 2) [Curator]
-Configuración (Client only)
-  └── Mis Editores [ClientUserResource]
+Configuración (OCULTO — plan futuro)
+  └── Mis Editores [ClientUserResource, hidden]
 ```
 - Sites and Subscriptions hidden from editors via `shouldRegisterNavigation()`
 - "SEO Management" page is hidden via `->enableManagementPage(false)`
@@ -211,7 +204,7 @@ Includes: `slug, title, description, content, tags, author, pubDate, cover_image
 ---
 
 ## Pending / To Do (as of 2026-06-17)
-- [ ] Resolve SEO column conflict (manual posts columns vs seo_meta table)
+- [x] Resolve SEO column conflict — manual columns dropped, plugin `seo_meta` is the source of truth
 - [ ] Categorize existing 41 posts (all have `category_id = NULL`) — use bulk assign
 - [ ] Client dashboard welcome page (currently empty)
 - [ ] Post preview before publishing

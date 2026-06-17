@@ -34,13 +34,12 @@ class ClientUserResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        // Solo los Client (no los ClientUser editores) pueden gestionar editores
-        return Auth::guard('client')->check();
+        return false;
     }
 
     public static function canAccess(): bool
     {
-        return Auth::guard('client')->check();
+        return false;
     }
 
     public static function getEloquentQuery(): Builder

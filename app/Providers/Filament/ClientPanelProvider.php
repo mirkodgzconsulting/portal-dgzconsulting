@@ -19,7 +19,9 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\View\PanelsRenderHook;
-use Filament\Widgets\AccountWidget;
+use App\Filament\Cliente\Widgets\WelcomeWidget;
+use App\Filament\Cliente\Widgets\RecentPostsWidget;
+use App\Filament\Cliente\Widgets\SubscriptionsWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -74,7 +76,9 @@ class ClientPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->widgets([
-                AccountWidget::class,
+                WelcomeWidget::class,
+                RecentPostsWidget::class,
+                SubscriptionsWidget::class,
             ])
             ->plugins([
                 SeoPlugin::make()
