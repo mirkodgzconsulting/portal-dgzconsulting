@@ -18,7 +18,7 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = "geist-tag";
+    protected static \BackedEnum|string|null $navigationIcon = "phosphor-tag-light";
 
     public static function getNavigationGroup(): ?string
     {

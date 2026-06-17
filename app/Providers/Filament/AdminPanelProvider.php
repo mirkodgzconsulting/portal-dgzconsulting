@@ -63,6 +63,10 @@ class AdminPanelProvider extends PanelProvider
                     ? '<div class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200">' . e(Auth::user()->name) . '</div>'
                     : ''
             )
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn () => '<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">'
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -77,7 +81,7 @@ class AdminPanelProvider extends PanelProvider
                 CuratorPlugin::make()
                     ->label('Media')
                     ->pluralLabel('Biblioteca de medios')
-                    ->navigationIcon('geist-image')
+                    ->navigationIcon('phosphor-image-light')
                     ->navigationGroup('Contenido')
                     ->navigationSort(2)
                     ->showBadge(true)

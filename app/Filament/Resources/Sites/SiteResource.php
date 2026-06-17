@@ -23,7 +23,7 @@ class SiteResource extends Resource
 {
     protected static ?string $model = Site::class;
 
-    protected static string|BackedEnum|null $navigationIcon = "geist-globe";
+    protected static string|BackedEnum|null $navigationIcon = "phosphor-globe-light";
 
     protected static string|UnitEnum|null $navigationGroup = 'CRM';
 

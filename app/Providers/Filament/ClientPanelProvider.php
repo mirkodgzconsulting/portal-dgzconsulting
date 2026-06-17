@@ -16,7 +16,7 @@ use Filament\Support\Enums\Width;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
+use App\Filament\Cliente\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\View\PanelsRenderHook;
@@ -48,17 +48,17 @@ class ClientPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/cliente/theme.css')
             ->colors([
                 'primary' => [
-                    50  => '#eff6ff',
-                    100 => '#dbeafe',
-                    200 => '#bdd4fe',
-                    300 => '#93bbfd',
-                    400 => '#5a9cf9',
-                    500 => '#3483f5',
-                    600 => '#0070f3',
-                    700 => '#0060d1',
-                    800 => '#0550ad',
-                    900 => '#0a3d82',
-                    950 => '#072556',
+                    50  => '#eef4ff',
+                    100 => '#d9e6ff',
+                    200 => '#bcd3ff',
+                    300 => '#8eb5ff',
+                    400 => '#5a8ef7',
+                    500 => '#3470ee',
+                    600 => '#0F65E6',
+                    700 => '#0d54c4',
+                    800 => '#10449f',
+                    900 => '#133c7d',
+                    950 => '#0e254d',
                 ],
                 'gray' => Color::Zinc,
             ])
@@ -75,7 +75,7 @@ class ClientPanelProvider extends PanelProvider
             )
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
-                fn () => '<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script src="https://cdn.lordicon.com/lordicon.js"></script>'
+                fn () => '<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet"><script src="https://cdn.lordicon.com/lordicon.js"></script><link rel="preload" href="/icons/wired-outline-269-avatar-female-hover-jump.json" as="fetch" crossorigin><link rel="preload" href="/icons/wired-outline-268-avatar-man-hover-jump.json" as="fetch" crossorigin>'
             )
             ->discoverResources(in: app_path('Filament/Cliente/Resources'), for: 'App\Filament\Cliente\Resources')
             ->pages([

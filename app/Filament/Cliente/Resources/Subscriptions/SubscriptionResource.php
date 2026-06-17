@@ -19,7 +19,7 @@ class SubscriptionResource extends Resource
 {
     protected static ?string $model = Subscription::class;
 
-    protected static string|BackedEnum|null $navigationIcon = "geist-credit-card";
+    protected static string|BackedEnum|null $navigationIcon = "phosphor-credit-card-light";
 
     protected static ?string $navigationLabel = 'Mis Suscripciones';
 

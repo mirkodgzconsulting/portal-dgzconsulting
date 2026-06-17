@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Post;
 use BladeUI\Icons\Factory as IconFactory;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Spatie\MediaLibrary\MediaCollections\Events\MediaHasBeenAddedEvent;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +25,13 @@ class AppServiceProvider extends ServiceProvider
                 'path' => resource_path('svg/geist'),
                 'prefix' => 'geist',
             ]);
+        });
+
+        Event::listen(MediaHasBeenAddedEvent::class, function (MediaHasBeenAddedEvent $event) {
+            $media = $event->media;
+            if ($media->model_type === Post::class && $media->collection_name === 'cover') {
+                $media->model->updateQuietly(['cover_image' => $media->getUrl()]);
+            }
         });
     }
 }

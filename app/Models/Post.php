@@ -42,6 +42,7 @@ class Post extends Model implements HasMedia
                 $post->slug = Str::slug($post->title);
             }
         });
+
     }
 
     public function site(): BelongsTo

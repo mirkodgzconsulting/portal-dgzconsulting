@@ -21,7 +21,7 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static string|BackedEnum|null $navigationIcon = "geist-file-text";
+    protected static string|BackedEnum|null $navigationIcon = "phosphor-file-text-light";
 
     protected static string|UnitEnum|null $navigationGroup = 'Contenido';
 

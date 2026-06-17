@@ -1,7 +1,7 @@
 <x-filament-panels::page>
     <div class="space-y-4">
         {{-- Upload Area --}}
-        <div class="border-2 border-dashed border-zinc-300 dark:border-zinc-600 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+        <div class="fi-ta-ctn border-dashed p-6 text-center hover:border-blue-400 transition-colors" style="flex-direction: column;">
             <input
                 type="file"
                 wire:model="newFiles"
@@ -20,6 +20,9 @@
                 <p class="text-xs text-zinc-500 mt-1">Uploading...</p>
             </div>
         </div>
+
+        {{-- Content card (matches fi-ta-ctn style) --}}
+        <div class="fi-ta-ctn p-4 space-y-4" style="flex-direction: column;">
 
         {{-- Toolbar --}}
         <div class="flex items-center justify-between gap-4">
@@ -59,8 +62,8 @@
                             @foreach($media as $item)
                                 <div
                                     wire:click="selectMedia({{ $item->id }})"
-                                    class="cursor-pointer group relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-150
-                                        {{ $selectedMediaId === $item->id ? 'border-blue-500 ring-2 ring-blue-200' : 'border-transparent hover:border-zinc-300' }}"
+                                    class="cursor-pointer group relative aspect-square rounded-xl overflow-hidden border shadow-sm transition-all duration-150
+                                        {{ $selectedMediaId === $item->id ? 'border-blue-500 ring-2 ring-blue-200' : 'border-zinc-200 hover:border-zinc-400' }}"
                                 >
                                     <img
                                         src="{{ $item->getUrl() }}"
@@ -131,5 +134,6 @@
                 </div>
             @endif
         </div>
+        </div> {{-- /content card --}}
     </div>
 </x-filament-panels::page>

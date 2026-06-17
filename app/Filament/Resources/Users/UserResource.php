@@ -19,7 +19,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = "geist-users";
+    protected static string|BackedEnum|null $navigationIcon = "phosphor-user-circle-light";
 
     protected static string|UnitEnum|null $navigationGroup = 'Configuración';
 

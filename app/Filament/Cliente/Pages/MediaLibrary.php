@@ -17,7 +17,7 @@ class MediaLibrary extends Page
 {
     use WithPagination, WithFileUploads;
 
-    protected static \BackedEnum|string|null $navigationIcon = 'geist-image';
+    protected static \BackedEnum|string|null $navigationIcon = 'phosphor-image-light';
 
     protected static ?string $navigationLabel = 'Media Library';
 

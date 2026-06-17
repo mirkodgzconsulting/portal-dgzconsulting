@@ -21,7 +21,7 @@ class ClientUserResource extends Resource
 {
     protected static ?string $model = ClientUser::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = "geist-users";
+    protected static \BackedEnum|string|null $navigationIcon = "phosphor-users-light";
 
     public static function getNavigationGroup(): ?string
     {

@@ -1,15 +1,11 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         <div class="space-y-6">
-            <div class="flex items-center gap-4">
-                <lord-icon
-                    src="https://cdn.lordicon.com/rpviwvwn.json"
-                    trigger="hover"
-                    stroke="light"
-                    state="hover-rotate-up-to-down"
-                    colors="primary:#0070f3,secondary:#71717a"
-                    style="width:48px;height:48px">
-                </lord-icon>
+            <div class="flex items-center gap-1">
+                <x-lord-icon
+                    :icon="$gender === 'female' ? 'wired-outline-269-avatar-female-hover-jump' : 'wired-outline-268-avatar-man-hover-jump'"
+                    :size="72"
+                />
                 <div>
                     <h2 class="text-xl font-semibold text-zinc-900 dark:text-white">
                         ¡Hola, {{ $userName }}!
@@ -47,7 +43,10 @@
 
             <div class="flex flex-wrap gap-3">
                 <a href="{{ route('filament.cliente.resources.posts.create') }}"
-                   class="inline-flex items-center gap-1.5 h-10 rounded-md bg-zinc-900 dark:bg-white px-4 text-sm font-medium text-white dark:text-zinc-900 hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-colors duration-200">
+                   class="inline-flex items-center gap-1.5 h-10 rounded-md px-4 text-sm font-medium text-white transition-colors duration-200"
+                   style="background-color: #0F65E6;"
+                   onmouseover="this.style.backgroundColor='#0d54c4'"
+                   onmouseout="this.style.backgroundColor='#0F65E6'">
                     + Nuevo Post
                 </a>
                 <a href="{{ route('filament.cliente.resources.posts.index') }}"

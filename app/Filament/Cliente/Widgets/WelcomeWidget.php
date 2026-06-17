@@ -2,6 +2,7 @@
 
 namespace App\Filament\Cliente\Widgets;
 
+use App\Models\Client;
 use App\Models\Post;
 use App\Models\Site;
 use Filament\Widgets\Widget;
@@ -25,6 +26,9 @@ class WelcomeWidget extends Widget
             ?? Auth::guard('client_user')->user()?->name
             ?? 'Usuario';
 
+        $client = Client::find($clientId);
+        $gender = $client?->gender ?? 'male';
+
         $siteIds = Site::where('client_id', $clientId)->pluck('id');
 
         $totalPosts = Post::whereIn('site_id', $siteIds)->count();
@@ -35,6 +39,7 @@ class WelcomeWidget extends Widget
         return [
             'userName' => $userName,
             'isEditor' => $isEditor,
+            'gender' => $gender,
             'totalPosts' => $totalPosts,
             'publishedPosts' => $publishedPosts,
             'draftPosts' => $draftPosts,

@@ -23,7 +23,7 @@ class PortfolioCategoryResource extends Resource
 {
     protected static ?string $model = PortfolioCategory::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'geist-image';
+    protected static string|\BackedEnum|null $navigationIcon = 'phosphor-image-light';
 
     protected static ?int $navigationSort = 4;
 

@@ -22,7 +22,7 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = "geist-tag";
+    protected static \BackedEnum|string|null $navigationIcon = "phosphor-tag-light";
 
     public static function getNavigationGroup(): ?string
     {
@@ -53,7 +53,6 @@ class CategoryResource extends Resource
                 ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
             TextInput::make('slug')
                 ->label('Slug')
-                ->required()
                 ->helperText('Se autogenera del nombre'),
         ]);
     }

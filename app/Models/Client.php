@@ -28,6 +28,7 @@ class Client extends Model implements AuthenticatableContract, FilamentUser, Has
         'phone',
         'secondary_email',
         'active',
+        'gender',
         'logo',
         'password',
     ];

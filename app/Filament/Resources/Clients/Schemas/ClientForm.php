@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Clients\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -25,6 +26,13 @@ class ClientForm
                 TextInput::make('phone')
                     ->label('Teléfono / WhatsApp')
                     ->tel(),
+                Select::make('gender')
+                    ->label('Sexo')
+                    ->options([
+                        'male' => 'Hombre',
+                        'female' => 'Mujer',
+                    ])
+                    ->default('male'),
                 Toggle::make('active')
                     ->label('Cliente activo')
                     ->helperText('Desactiva si ya no tiene servicio con DGZ. No se borra ningún dato, solo se oculta de la lista por defecto.')

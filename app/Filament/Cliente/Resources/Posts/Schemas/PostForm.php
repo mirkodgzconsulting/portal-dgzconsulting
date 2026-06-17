@@ -9,7 +9,6 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\ViewField;
-use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
@@ -37,21 +36,24 @@ class PostForm
                 Section::make()
                     ->columnSpan(2)
                     ->schema([
-                        Select::make('site_id')
-                            ->label('Sitio')
-                            ->relationship('site', 'name', modifyQueryUsing: fn (Builder $query) => $query
-                                ->where('client_id', Auth::guard('client')->id() ?? Auth::guard('client_user')->user()?->client_id)
-                                ->where('has_blog', true))
-                            ->searchable()
-                            ->preload()
-                            ->required()
-                            ->live(),
-                        Select::make('category_id')
-                            ->label('Categoría')
-                            ->relationship('category', 'name', modifyQueryUsing: fn (Builder $query, $get) => $query->where('site_id', $get('site_id')))
-                            ->searchable()
-                            ->preload()
-                            ->placeholder('Sin categoría'),
+                        Grid::make(2)
+                            ->schema([
+                                Select::make('site_id')
+                                    ->label('Sitio')
+                                    ->relationship('site', 'name', modifyQueryUsing: fn (Builder $query) => $query
+                                        ->where('client_id', Auth::guard('client')->id() ?? Auth::guard('client_user')->user()?->client_id)
+                                        ->where('has_blog', true))
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->live(),
+                                Select::make('category_id')
+                                    ->label('Categoría')
+                                    ->relationship('category', 'name', modifyQueryUsing: fn (Builder $query, $get) => $query->where('site_id', $get('site_id')))
+                                    ->searchable()
+                                    ->preload()
+                                    ->placeholder('Sin categoría'),
+                            ]),
                         TextInput::make('title')
                             ->label('Título')
                             ->required()
@@ -60,11 +62,8 @@ class PostForm
                             ->label('Slug')
                             ->hidden(),
                         Textarea::make('description')
-                            ->label('Resumen / Meta descripción')
-                            ->helperText('Texto corto que aparece en Google y al compartir en redes. Máx. 160 caracteres.')
-                            ->maxLength(160)
-                            ->required()
-                            ->columnSpanFull(),
+                            ->hidden()
+                            ->dehydratedWhenHidden(),
                         RichEditor::make('content')
                             ->label('Contenido')
                             ->columnSpanFull()
@@ -98,7 +97,8 @@ class PostForm
                             ->default(now()),
                         TextInput::make('author')
                             ->label('Autor')
-                            ->placeholder('Pablo Estevan / CONKRET'),
+                            ->default(fn () => Auth::guard('client')->user()?->name ?? Auth::guard('client_user')->user()?->name)
+                            ->placeholder(fn () => Auth::guard('client')->user()?->name ?? Auth::guard('client_user')->user()?->name),
                         TagsInput::make('tags')
                             ->label('Etiquetas'),
                     ]),
@@ -107,18 +107,9 @@ class PostForm
                 Section::make('Imagen de portada')
                     ->columnSpan(2)
                     ->schema([
-                        Placeholder::make('cover_preview')
-                            ->label('')
-                            ->content(fn ($record) => $record?->getFirstMediaUrl('cover')
-                                ? new HtmlString(
-                                    '<div class="flex items-center gap-4">'
-                                    . '<img src="' . e($record->getFirstMediaUrl('cover')) . '" style="max-height:150px;object-fit:contain;border-radius:8px;">'
-                                    . '</div>'
-                                )
-                                : ($record?->cover_image
-                                    ? new HtmlString('<img src="' . e($record->cover_image) . '" style="max-height:150px;object-fit:contain;border-radius:8px;">')
-                                    : null))
-                            ->visibleOn('edit'),
+                        ViewField::make('cover_preview')
+                            ->view('filament.forms.components.cover-preview')
+                            ->label(''),
                         SpatieMediaLibraryFileUpload::make('cover')
                             ->collection('cover')
                             ->label('Subir nueva imagen')
@@ -143,12 +134,16 @@ class PostForm
                         TextInput::make('cover_image')
                             ->label('URL de imagen (desde biblioteca)')
                             ->helperText('Se llena automáticamente al seleccionar de la biblioteca')
-                            ->url(),
+                            ->url()
+                            ->hidden()
+                            ->dehydratedWhenHidden(),
                     ]),
 
                 // ── SEO (ancho completo) ───────────────────────────────────
-                Section::make()
+                Section::make('SEO (opcional)')
                     ->columnSpan(3)
+                    ->collapsed()
+                    ->collapsible()
                     ->schema([
                         SeoSection::make(),
                     ]),

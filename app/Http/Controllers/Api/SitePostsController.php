@@ -11,7 +11,7 @@ class SitePostsController extends Controller
     public function index(Site $site): JsonResponse
     {
         $posts = $site->posts()
-            ->with('category')
+            ->with(['category', 'seo'])
             ->where('published', true)
             ->orderByDesc('pub_date')
             ->get()
@@ -20,21 +20,21 @@ class SitePostsController extends Controller
                 'category_slug'   => $post->category?->slug,
                 'slug'            => $post->slug,
                 'title'           => $post->title,
-                'description'     => $post->description,
+                'description'     => $post->description ?? $post->seo?->description,
                 'content'         => $post->content,
                 'tags'            => $post->tags ?? [],
                 'author'          => $post->author,
                 'pubDate'         => $post->pub_date->toDateString(),
                 'cover_image'     => $post->cover_image_url,
                 'featured'        => $post->featured,
-                'seo_title'       => $post->seo_title,
-                'seo_description' => $post->seo_description,
-                'focus_keyword'   => $post->focus_keyword,
-                'canonical_url'   => $post->canonical_url,
-                'og_title'        => $post->og_title,
-                'og_description'  => $post->og_description,
-                'og_image'        => $post->og_image,
-                'robots'          => $post->robots ?? 'index,follow',
+                'seo_title'       => $post->seo?->title,
+                'seo_description' => $post->seo?->description,
+                'focus_keyword'   => $post->seo?->focus_keyword,
+                'canonical_url'   => $post->seo?->canonical_url,
+                'og_title'        => $post->seo?->og_title,
+                'og_description'  => $post->seo?->og_description,
+                'og_image'        => $post->seo?->og_image,
+                'robots'          => $post->seo?->robots ?? 'index,follow',
             ]);
 
         return response()->json(['data' => $posts]);

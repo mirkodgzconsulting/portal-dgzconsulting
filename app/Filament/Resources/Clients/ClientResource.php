@@ -23,7 +23,7 @@ class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
 
-    protected static string|BackedEnum|null $navigationIcon = "geist-users";
+    protected static string|BackedEnum|null $navigationIcon = "phosphor-buildings-light";
 
     protected static string|UnitEnum|null $navigationGroup = 'CRM';
 
