@@ -6,6 +6,7 @@ use App\Filament\Cliente\Pages\EditProfile;
 use App\Filament\Cliente\Pages\Login;
 use App\Http\Middleware\AuthenticateClientOrEditor;
 use App\Models\Client;
+use App\Curator\ClientMediaResource;
 use Awcodes\Curator\CuratorPlugin;
 use Nomanur\FilamentSeoPro\SeoPlugin;
 use Filament\Enums\ThemeMode;
@@ -106,10 +107,10 @@ class ClientPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                AuthenticateClientOrEditor::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
-                AuthenticateClientOrEditor::class,
             ]);
     }
 }

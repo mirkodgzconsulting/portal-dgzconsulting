@@ -3,12 +3,24 @@
 namespace App\Curator;
 
 use Awcodes\Curator\Resources\Media\MediaResource;
-use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class ClientMediaResource extends MediaResource
 {
-    public static function table(Table $table): Table
+    protected static ?string $slug = 'media';
+
+    public static function getEloquentQuery(): Builder
     {
-        return MediaTable::configure($table);
+        $clientId = Auth::guard('client')->id()
+            ?? Auth::guard('client_user')->user()?->client_id;
+
+        $query = parent::getEloquentQuery();
+
+        if ($clientId) {
+            $query->where('client_id', $clientId);
+        }
+
+        return $query;
     }
 }
