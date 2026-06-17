@@ -2,6 +2,7 @@
 
 namespace App\Filament\Cliente\Resources\Posts\Schemas;
 
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
@@ -103,60 +104,32 @@ class PostForm
                 Section::make('Imagen de portada')
                     ->columnSpan(2)
                     ->schema([
-                        Grid::make(10)
-                            ->schema([
-                                FileUpload::make('cover_image')
-                                    ->label('Subir archivo')
-                                    ->image()
-                                    ->imageEditor()
-                                    ->maxSize(5120)
-                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                                    ->helperText(fn ($record) => $record?->cover_image
-                                        ? new HtmlString('<img src="' . e($record->cover_image) . '" style="max-height:100px;object-fit:contain;border-radius:6px;margin-top:8px;">')
-                                        : 'JPG, PNG, WebP — máx. 5 MB')
-                                    ->columnSpan(4)
-                                    ->disk('local')
-                                    ->visibility('public')
-                                    ->saveUploadedFileUsing(function ($file, $get) {
-                                        $client = Auth::guard('client')->user();
-                                        $site = \App\Models\Site::find($get('site_id'));
-                                        $siteSlug = $site?->slug ?? 'general';
-                                        $ext = $file->getClientOriginalExtension() ?: 'jpg';
-                                        $filename = Str::uuid() . '.' . $ext;
-                                        $path = "clients/{$client->id}/{$siteSlug}/{$filename}";
-                                        Storage::disk('r2')->put($path, file_get_contents($file->getRealPath()), 'public');
-                                        return Storage::disk('r2')->url($path);
-                                    })
-                                    ->afterStateHydrated(function (FileUpload $component, $state) {
-                                        if ($state && str_starts_with($state, 'http')) {
-                                            $component->state(null);
-                                        }
-                                    })
-                                    ->dehydrateStateUsing(function ($state, $get, $record) {
-                                        if (empty($state) && $record) {
-                                            return $record->cover_image;
-                                        }
-                                        return $state;
-                                    }),
-                                TextInput::make('cover_image_url')
-                                    ->label('O pegar URL externa')
-                                    ->placeholder('https://res.cloudinary.com/...')
-                                    ->url()
-                                    ->helperText('Si pegas una URL aquí, se usará como imagen de portada')
-                                    ->columnSpan(6)
-                                    ->afterStateHydrated(function (TextInput $component, $state, $record) {
-                                        if ($record && $record->cover_image && str_starts_with($record->cover_image, 'http')) {
-                                            $component->state($record->cover_image);
-                                        }
-                                    })
-                                    ->dehydrated(false)
-                                    ->live()
-                                    ->afterStateUpdated(function ($state, callable $set) {
-                                        if (filled($state)) {
-                                            $set('cover_image', $state);
-                                        }
-                                    }),
-                            ]),
+                        Placeholder::make('cover_preview')
+                            ->label('')
+                            ->content(fn ($record) => $record?->cover_image
+                                ? new HtmlString('<img src="' . e($record->cover_image) . '" style="max-height:120px;object-fit:contain;border-radius:6px;">')
+                                : null)
+                            ->visibleOn('edit'),
+                        CuratorPicker::make('cover_media_id')
+                            ->label('Seleccionar imagen')
+                            ->buttonLabel('Elegir de Media Library o subir nueva')
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                            ->maxSize(5120)
+                            ->dehydrated(false)
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                if ($state) {
+                                    $media = \App\Models\Media::find($state);
+                                    if ($media) {
+                                        $set('cover_image', $media->url);
+                                    }
+                                }
+                            })
+                            ->live(),
+                        TextInput::make('cover_image')
+                            ->label('URL de imagen')
+                            ->placeholder('Se llena automáticamente al seleccionar imagen')
+                            ->helperText('También puedes pegar una URL externa directamente')
+                            ->url(),
                     ]),
 
                 // ── SEO (ancho completo) ───────────────────────────────────
