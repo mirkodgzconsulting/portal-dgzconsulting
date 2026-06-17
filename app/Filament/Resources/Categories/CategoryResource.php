@@ -7,7 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
+use CodeWithDennis\FilamentLucideIcons\Enums\LucideIcon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Actions\EditAction;
@@ -18,7 +18,7 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = Heroicon::OutlinedTag;
+    protected static \BackedEnum|string|null $navigationIcon = LucideIcon::Tag;
 
     public static function getNavigationGroup(): ?string
     {

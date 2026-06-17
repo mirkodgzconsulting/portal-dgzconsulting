@@ -10,7 +10,8 @@ use Awcodes\Curator\CuratorPlugin;
 use Nomanur\FilamentSeoPro\SeoPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
-use Filament\Support\Icons\Heroicon;
+use CodeWithDennis\FilamentLucideIcons\Enums\LucideIcon;
+use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -49,16 +50,17 @@ class ClientPanelProvider extends PanelProvider
                 'primary' => [
                     50  => '#eff6ff',
                     100 => '#dbeafe',
-                    200 => '#bfdbfe',
-                    300 => '#93c5fd',
-                    400 => '#60a5fa',
-                    500 => '#3b82f6',
-                    600 => '#0F65E6',
-                    700 => '#0d56c4',
-                    800 => '#0a3f8f',
-                    900 => '#082d66',
-                    950 => '#051c40',
+                    200 => '#bdd4fe',
+                    300 => '#93bbfd',
+                    400 => '#5a9cf9',
+                    500 => '#3483f5',
+                    600 => '#0070f3',
+                    700 => '#0060d1',
+                    800 => '#0550ad',
+                    900 => '#0a3d82',
+                    950 => '#072556',
                 ],
+                'gray' => Color::Zinc,
             ])
             ->defaultThemeMode(ThemeMode::Light)
             ->sidebarWidth('15rem')
@@ -87,7 +89,7 @@ class ClientPanelProvider extends PanelProvider
                 CuratorPlugin::make()
                     ->label('Imagen')
                     ->pluralLabel('Mis Imágenes')
-                    ->navigationIcon(Heroicon::OutlinedPhoto)
+                    ->navigationIcon(LucideIcon::Image)
                     ->navigationGroup('Contenido')
                     ->navigationSort(2),
             ])

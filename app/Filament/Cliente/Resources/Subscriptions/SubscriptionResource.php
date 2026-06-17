@@ -10,7 +10,7 @@ use App\Models\Subscription;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
+use CodeWithDennis\FilamentLucideIcons\Enums\LucideIcon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +19,7 @@ class SubscriptionResource extends Resource
 {
     protected static ?string $model = Subscription::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCreditCard;
+    protected static string|BackedEnum|null $navigationIcon = LucideIcon::CreditCard;
 
     protected static ?string $navigationLabel = 'Mis Suscripciones';
 

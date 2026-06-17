@@ -13,7 +13,7 @@ use App\Models\Post;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
+use CodeWithDennis\FilamentLucideIcons\Enums\LucideIcon;
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -21,7 +21,7 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+    protected static string|BackedEnum|null $navigationIcon = LucideIcon::FileText;
 
     protected static string|UnitEnum|null $navigationGroup = 'Contenido';
 

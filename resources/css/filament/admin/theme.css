@@ -1,39 +1,173 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
 
-@font-face {
-    font-family: 'Roobert';
-    font-style: normal;
-    font-display: swap;
-    font-weight: 400;
-    src: url('/fonts/filament/filament/inter/Roobert-Regular.woff2') format('woff2');
-}
-
 @theme {
-    --font-sans: 'Roobert', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    --radius-lg: 6px;
 }
 
+/* ── Vercel tight letter-spacing ── */
+body {
+    letter-spacing: -0.28px;
+}
+h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+}
+
+/* ── Content area: 24px padding, centered max-width ── */
 .fi-main {
-    padding-inline: calc(var(--spacing) * 4) !important;
+    padding-inline: 24px !important;
+    padding-block: 24px !important;
+}
+.fi-main > * {
+    max-width: 1200px;
+    margin-inline: auto;
 }
 
-/* Curator list view: center thumbnail vertically */
+/* ── Sidebar: Vercel dimensions ── */
+.fi-sidebar-nav {
+    padding-inline: 12px !important;
+}
+.fi-sidebar-item-btn {
+    height: 36px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 400;
+    padding-inline: 8px;
+    gap: 8px;
+    transition: all 150ms ease;
+}
+.fi-sidebar-item-icon {
+    width: 18px;
+    height: 18px;
+}
+.fi-sidebar-item-btn[data-active] {
+    font-weight: 500;
+}
+
+/* ── Sidebar: group separators (Vercel style) ── */
+.fi-sidebar-group + .fi-sidebar-group {
+    border-top: 1px solid #eaeaea;
+    margin-top: 4px;
+    padding-top: 4px;
+}
+.dark .fi-sidebar-group + .fi-sidebar-group {
+    border-top-color: #333;
+}
+
+/* ── Cards / Sections: 1px border, no shadow (Vercel pattern) ── */
+.fi-section {
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    box-shadow: none !important;
+}
+.dark .fi-section {
+    border-color: #333;
+}
+
+/* ── Tables: clean headers ── */
+.fi-ta-header-cell {
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: normal;
+}
+.fi-ta-row {
+    transition: background-color 150ms ease;
+}
+
+/* ── Buttons: 40px height, 6px radius, 200ms transitions ── */
+.fi-btn {
+    height: 40px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+/* ── Badges: pill style ── */
+.fi-badge {
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 8px;
+}
+
+/* ── Inputs: consistent with Geist ── */
+.fi-input {
+    border-radius: 6px;
+    border-color: #eaeaea;
+    transition: border-color 200ms ease;
+}
+.fi-input:focus {
+    border-color: #0070f3;
+}
+.dark .fi-input {
+    border-color: #333;
+}
+
+/* ── Topbar: clean separator ── */
+.fi-topbar {
+    border-bottom: 1px solid #eaeaea;
+}
+.dark .fi-topbar {
+    border-bottom-color: #333;
+}
+
+/* ── Page content fade-in on load ── */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fi-main {
+    animation: fadeIn 0.25s ease-out;
+}
+
+/* ── Top loading bar (Vercel style) ── */
+@keyframes loadingBar {
+    0% { width: 0; }
+    50% { width: 70%; }
+    100% { width: 100%; opacity: 0; }
+}
+.fi-topbar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: #0070f3;
+    animation: loadingBar 0.6s ease-out forwards;
+}
+
+/* ── Skeleton pulse utility ── */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+.dark .skeleton {
+    background: linear-gradient(90deg, #27272a 25%, #3f3f46 50%, #27272a 75%);
+    background-size: 200% 100%;
+}
+
+/* ── Curator overrides ── */
 .curator-column img {
     display: block;
     object-fit: cover;
     border-radius: 4px;
 }
-
 fi-ta-col:has(.curator-column) {
     align-items: center;
     align-self: center;
 }
-
-/* Curator grid view: hide text columns below image */
 .dgz-hidden-cell {
     display: none !important;
 }
-
-

@@ -15,7 +15,7 @@ use App\Models\Site;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
+use CodeWithDennis\FilamentLucideIcons\Enums\LucideIcon;
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -23,7 +23,7 @@ class SiteResource extends Resource
 {
     protected static ?string $model = Site::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedGlobeAlt;
+    protected static string|BackedEnum|null $navigationIcon = LucideIcon::Globe;
 
     protected static string|UnitEnum|null $navigationGroup = 'CRM';
 

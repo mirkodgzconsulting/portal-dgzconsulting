@@ -15,7 +15,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
+use CodeWithDennis\FilamentLucideIcons\Enums\LucideIcon;
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -23,7 +23,7 @@ class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
+    protected static string|BackedEnum|null $navigationIcon = LucideIcon::UsersRound;
 
     protected static string|UnitEnum|null $navigationGroup = 'CRM';
 
