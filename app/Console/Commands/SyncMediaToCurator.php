@@ -56,20 +56,23 @@ class SyncMediaToCurator extends Command
 
     private function insertMedia(string $url, ?string $title, ?int $clientId): void
     {
-        $parsed = parse_url($url);
-        $path = ltrim($parsed['path'] ?? '', '/');
-        $ext = pathinfo($path, PATHINFO_EXTENSION) ?: 'jpg';
-        $name = pathinfo($path, PATHINFO_FILENAME);
+        $r2Base = rtrim(config('filesystems.disks.r2.url', ''), '/') . '/';
+        $relativePath = str_starts_with($url, $r2Base)
+            ? str_replace($r2Base, '', $url)
+            : ltrim(parse_url($url, PHP_URL_PATH) ?? '', '/');
+
+        $ext = pathinfo($relativePath, PATHINFO_EXTENSION) ?: 'jpg';
+        $name = pathinfo($relativePath, PATHINFO_FILENAME);
 
         DB::table('curator')->insert([
             'disk' => 'r2',
-            'directory' => dirname($path),
+            'directory' => dirname($relativePath),
             'visibility' => 'public',
             'name' => $name,
-            'path' => $url,
-            'width' => null,
-            'height' => null,
-            'size' => null,
+            'path' => $relativePath,
+            'width' => 0,
+            'height' => 0,
+            'size' => 0,
             'type' => 'image',
             'ext' => $ext,
             'alt' => $title,
