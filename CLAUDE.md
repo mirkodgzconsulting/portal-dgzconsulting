@@ -140,13 +140,36 @@ Grid::make(10) → [
 
 ---
 
+## Sub-users / Editors (ClientUser)
+
+### Model & Auth
+- `ClientUser` — editor accounts linked to a `Client` via `client_id`
+- Guard `client_user` in `config/auth.php` (provider `client_users`, model `ClientUser`)
+- Custom `Login` page at `app/Filament/Cliente/Pages/Login.php` tries `client` guard first, then `client_user`
+- `AuthenticateClientOrEditor` middleware allows both guards into `/area-cliente`
+
+### Navigation visibility
+- **Client (owner)**: sees everything — Posts, Categories, Images, Sites, Subscriptions, "Mis Editores"
+- **ClientUser (editor)**: only sees Posts (Sites, Subscriptions, Editores hidden via `shouldRegisterNavigation()`)
+- `PostResource` resolves `client_id` from either guard: `Auth::guard('client')->id() ?? Auth::guard('client_user')->user()?->client_id`
+
+### Resources
+- Admin: `app/Filament/Resources/ClientUsers/ClientUserResource.php` — manages all editors
+- Client: `app/Filament/Cliente/Resources/ClientUsers/ClientUserResource.php` — client creates own editors
+- `mutateFormDataBeforeCreate` lives in `Pages/CreateClientUser.php` (not the Resource)
+
+---
+
 ## Client Panel Navigation
 ```
 Contenido
   ├── Mis Posts (sort 1)
   ├── Categorías (sort 2)  [Client CategoryResource]
   └── Mis Imágenes (sort 2) [Curator]
+Configuración (Client only)
+  └── Mis Editores [ClientUserResource]
 ```
+- Sites and Subscriptions hidden from editors via `shouldRegisterNavigation()`
 - "SEO Management" page is hidden via `->enableManagementPage(false)`
 
 ---
@@ -171,6 +194,19 @@ Both have:
 
 ### NormalizedPost interface
 Includes: `slug, title, description, content, tags, author, pubDate, cover_image, featured, category, category_slug`
+
+---
+
+## Admin Clients Table (Notion-style)
+- Columns: avatar (auto-generated initials if no logo), name+email, sites (badges, max 2 + `+N` tooltip), domains (links, max 2 + `+N`), active plan (color-coded badge), renewal date (red if overdue, yellow if <30d), phone (hidden by default), active toggle
+- Filters: active, subscription status, renewal soon (30d/60d/overdue)
+- Default pagination: 25, striped rows
+- Eager loads `sites.subscriptions` via `getEloquentQuery()`
+
+### Admin Navigation Icons
+- Clientes → `Heroicon::OutlinedUsers`
+- Sitios → `Heroicon::OutlinedGlobeAlt`
+- Suscripciones → `Heroicon::OutlinedCreditCard`
 
 ---
 
