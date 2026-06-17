@@ -105,30 +105,36 @@ class PostForm
                     ->columnSpan(2)
                     ->schema([
                         Placeholder::make('cover_preview')
-                            ->label('')
+                            ->label('Imagen actual')
                             ->content(fn ($record) => $record?->cover_image
-                                ? new HtmlString('<img src="' . e($record->cover_image) . '" style="max-height:120px;object-fit:contain;border-radius:6px;">')
-                                : null)
+                                ? new HtmlString('<img src="' . e($record->cover_image) . '" style="max-height:150px;object-fit:contain;border-radius:8px;">')
+                                : new HtmlString('<span style="color:#999;">Sin imagen</span>'))
                             ->visibleOn('edit'),
-                        CuratorPicker::make('cover_media_id')
-                            ->label('Seleccionar imagen')
-                            ->buttonLabel('Elegir de Media Library o subir nueva')
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                        FileUpload::make('cover_upload')
+                            ->label('Subir nueva imagen')
+                            ->image()
                             ->maxSize(5120)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                            ->helperText('JPG, PNG, WebP — máx. 5 MB. Se sube automáticamente.')
+                            ->disk('local')
+                            ->visibility('public')
                             ->dehydrated(false)
-                            ->afterStateUpdated(function ($state, callable $set) {
-                                if ($state) {
-                                    $media = \App\Models\Media::find($state);
-                                    if ($media) {
-                                        $set('cover_image', $media->url);
-                                    }
-                                }
-                            })
-                            ->live(),
+                            ->saveUploadedFileUsing(function ($file, $get, callable $set) {
+                                $clientId = Auth::guard('client')->id()
+                                    ?? Auth::guard('client_user')->user()?->client_id;
+                                $site = \App\Models\Site::find($get('site_id'));
+                                $siteSlug = $site?->slug ?? 'general';
+                                $ext = $file->getClientOriginalExtension() ?: 'jpg';
+                                $filename = Str::uuid() . '.' . $ext;
+                                $path = "clients/{$clientId}/{$siteSlug}/{$filename}";
+                                Storage::disk('r2')->put($path, file_get_contents($file->getRealPath()), 'public');
+                                $url = Storage::disk('r2')->url($path);
+                                $set('cover_image', $url);
+                                return $url;
+                            }),
                         TextInput::make('cover_image')
                             ->label('URL de imagen')
-                            ->placeholder('Se llena automáticamente al seleccionar imagen')
-                            ->helperText('También puedes pegar una URL externa directamente')
+                            ->helperText('Se llena al subir. También puedes pegar una URL externa.')
                             ->url(),
                     ]),
 
