@@ -9,14 +9,14 @@ Laravel 13 / Filament v5 / PHP 8.4 multi-tenant CRM for DGZ Consulting clients.
 - **Admin panel** → `/admin` — full access, manages all clients/sites/posts
 - **Client panel** → `/area-cliente` — isolated per client, auth guard `client` or `client_user`
 - **Multi-tenant chain**: `posts → site_id → sites.client_id` (complete isolation)
-- **Astro sites** consume the CRM via public REST API at build time
+- **Astro sites** consume the CRM via public REST API (SSR on Vercel, real-time)
 - **Storage**: Cloudflare R2 (S3-compatible) for all media uploads
 
 ### Key Models
-- `Client` — company accounts (one per customer). Has `HasMedia` (Spatie) for library uploads.
+- `Client` — company accounts (one per customer). Has `HasMedia` (Spatie) for library uploads. Has `gender` field (`male`/`female`, default `male`).
 - `Site` — websites per client (slug used in API routes). Has `has_blog` and `has_portfolio` booleans.
-- `Post` — blog articles. Has `HasMedia` with `cover` collection.
-- `Category` — blog categories (has `site_id`)
+- `Post` — blog articles. Has `HasMedia` with `cover` collection (single file).
+- `Category` — blog categories (has `site_id`). Slug auto-generated, not required.
 - `PortfolioCategory` — art/portfolio categories (has `site_id`, `cover_image`, `sort_order`). Has `HasMedia`.
 - `PortfolioItem` — individual portfolio images (has `portfolio_category_id`, `image_url`, `sort_order`). Has `HasMedia`.
 
@@ -43,13 +43,9 @@ public static function getNavigationGroup(): ?string { return 'Contenido'; }
 
 ### Navigation icon
 ```php
-// Use string for custom Geist icons
-protected static \BackedEnum|string|null $navigationIcon = 'geist-globe';
+// Use Phosphor Light icons (current standard)
+protected static \BackedEnum|string|null $navigationIcon = 'phosphor-house-line-light';
 ```
-
-### Custom Geist SVG Icons
-Registered in `AppServiceProvider::boot()` via `BladeUI\Icons\Factory`. SVGs in `resources/svg/geist/`.
-Icons: globe, file-text, tag, credit-card, image, users, home. All 16x16 fill-based (Vercel style).
 
 ### Namespaces that changed vs v3/v4
 | Component | v3/v4 | v5 |
@@ -78,6 +74,24 @@ protected string $view = '...';
 
 ### Bulk actions go in `toolbarActions()`, not `bulkActions()`
 
+### Hidden fields don't save by default
+```php
+// WRONG — hidden field won't persist on save
+TextInput::make('cover_image')->hidden()
+
+// CORRECT — must add dehydratedWhenHidden()
+TextInput::make('cover_image')->hidden()->dehydratedWhenHidden()
+```
+
+### TextEntry size (infolist)
+```php
+// WRONG — class not found in v5
+->size(TextEntry\TextEntrySize::Large)
+
+// CORRECT
+->size('lg')
+```
+
 ---
 
 ## Design System — Geist/Vercel Inspired
@@ -88,20 +102,36 @@ protected string $view = '...';
 - **Sidebar labels**: Urbanist 600, active 700
 
 ### Colors
-- **Primary**: Vercel blue `#0070f3` with full scale
+- **Primary**: DGZ brand blue `#0F65E6` with full scale (600 = brand color)
 - **Grays**: `Color::Zinc` (modern neutral)
 - **Logo text**: `var(--logo-text-color, #1d212b)` / dark: `#ededed`
+- **Sidebar icons**: `#2a2a2c`
+- **Sidebar separator (vertical)**: `#d7d7d7`
 
 ### Components
 - Cards: `border: 1px solid #eaeaea`, no shadow, `border-radius: 8px`
-- Buttons: 40px height, 6px radius, 200ms transitions
+- Buttons: 40px height, 6px radius, 200ms transitions, `background: #0F65E6`
 - Badges: pill style (`border-radius: 999px`)
-- Inputs: 6px radius, `border-color: #eaeaea`, focus `#0070f3`
-- Sidebar: 12px padding, 36px items, 8px gap, group separators
+- Inputs: 6px radius, `border-color: #eaeaea`, focus `#0F65E6`
+- Sidebar: 12px padding, 36px items, 8px gap, group separators, vertical border, white background
+- Scrollbar: `scrollbar-width: thin`, `scrollbar-color: #808080 transparent`
 
 ### Icons
-- Sidebar: Custom Geist SVGs (fill-based, `stroke-width: 1px !important`)
-- Sidebar icons registered as Blade icon set `geist-*`
+- **Sidebar**: Phosphor Light icons (`phosphor-*-light`) via `codeat3/blade-phosphor-icons`
+- **Animated**: LordIcon JSON files in `public/icons/`, used via `<x-lord-icon>` Blade component
+- **Legacy**: Geist SVGs still registered (`geist-*`) but replaced by Phosphor in client panel
+
+### LordIcon Component
+```blade
+{{-- Basic usage --}}
+<x-lord-icon icon="wired-outline-269-avatar-female-hover-jump" />
+
+{{-- With options --}}
+<x-lord-icon icon="my-icon" :size="72" trigger="loop" primary="#121331" secondary="#0F65E6" />
+```
+- JSON files go in `public/icons/`
+- Preloaded in `<head>` via `ClientPanelProvider` render hook
+- Defaults: size=48, trigger=hover, stroke=light, primary=#121331, secondary=#0F65E6
 
 ### Brand Logo
 - Component: `resources/views/components/brand-logo.blade.php`
@@ -122,31 +152,37 @@ Full design tokens: `docs/design-system-reference.md`
 
 ## Media System
 
-### Current State (IN PROGRESS)
-- **Spatie Media Library** installed (`spatie/laravel-medialibrary` + `filament/spatie-laravel-media-library-plugin`)
+### Architecture
+- **Spatie Media Library** (`spatie/laravel-medialibrary` + `filament/spatie-laravel-media-library-plugin`)
 - Config: `config/media-library.php` with `disk_name: r2`
 - Models with `HasMedia` + `InteractsWithMedia`: Post, Client, PortfolioCategory, PortfolioItem
-- Post cover: `SpatieMediaLibraryFileUpload` in PostForm (collection: `cover`, disk: `r2`)
-- **Curator** still installed but nav hidden in client panel (`->registerNavigation(false)`)
+- **Curator** still installed but nav hidden (`->registerNavigation(false)`) — pending removal
+
+### Media Upload Flow (Post cover)
+Two methods, both sync `cover_image` field automatically:
+1. **Direct upload** via `SpatieMediaLibraryFileUpload` → Spatie saves to R2, `MediaHasBeenAddedEvent` listener syncs URL to `cover_image` field
+2. **Media picker** via "Elegir de biblioteca" → Alpine.js modal fetches from `/api/client-media`, `$wire.set('data.cover_image', url)` sets the URL
+
+### Auto-sync: Spatie → cover_image
+`AppServiceProvider` listens to `MediaHasBeenAddedEvent`. When a media is added to Post's `cover` collection, the URL is copied to `posts.cover_image`. This ensures the API always has the cover URL regardless of upload method.
+
+### Cover Preview (reactive)
+- `ViewField` with `resources/views/filament/forms/components/cover-preview.blade.php`
+- Alpine.js `$watch('$wire.data.cover_image', ...)` updates preview in real-time
+- Shows existing Spatie media on edit as fallback
+- X button to remove image
 
 ### Media Library Page (custom)
 - `app/Filament/Cliente/Pages/MediaLibrary.php` — custom page with upload zone + grid
+- Uses `fi-ta-ctn` class for consistent card styling
+- Grid view with `rounded-xl shadow-sm border border-zinc-200` per image
 - Shows all Spatie media belonging to the client (via Client, Post, Portfolio models)
-- Upload via Livewire `WithFileUploads` → stores on Client model's `library` collection
 
-### Media Picker Modal (IN PROGRESS)
-- `app/Livewire/MediaPickerModal.php` — Livewire component
+### Media Picker Modal
 - `resources/views/livewire/media-picker-inline.blade.php` — Alpine.js modal with tabs
 - API endpoint `GET /api/client-media` returns client's media as JSON
-- Integrated in PostForm via Filament Action `browse_media` that opens modal
-- **Known issue**: CSS grid not rendering correctly inside Filament modal (Alpine `x-show` conflicts with `display:grid`). Fix attempted with `x-if` template.
-
-### TODO for next session
-- [ ] Fix media picker modal grid layout (CSS conflict with Alpine/Filament modal)
-- [ ] Make "Set featured image" button work (dispatch event → set cover_image URL)
-- [ ] Test full flow: upload in Media Library → select in Post picker → save post
-- [ ] Decide: keep Curator for admin or migrate admin to Spatie too
-- [ ] Remove Curator package entirely once Spatie is fully working
+- Integrated in PostForm via Filament Action `browse_media`
+- Working: grid display, search, select, set featured image with preview
 
 ---
 
@@ -169,14 +205,10 @@ Full design tokens: `docs/design-system-reference.md`
 - Client ID: 5, Site ID: 3, slug: `pablopinxit`
 - 6 categories: Walls (38), Shutters (25), Dadapop (21), Ikons (88), Hybris (49), Mind Blowing Garden (27)
 - 248 images uploaded to R2 via `php artisan portfolio:import-pablo`
-- Cover images uploaded separately from original Astro project
 
 ### Astro Integration
 - `/Users/mirkodgz/Projects/Pablo Pinxit/pablopinxit-sito/`
 - `src/lib/crm.ts` — `getCrmPortfolio()` fetches from CRM API
-- Pages consume API instead of filesystem scan
-- Navigation receives categories as props from Layout
-- GalleryGrid has spinner loading + fade-in per image
 - Env: `CRM_URL`, `CRM_SITE_SLUG=pablopinxit`
 
 ---
@@ -185,10 +217,15 @@ Full design tokens: `docs/design-system-reference.md`
 
 ### PostForm layout (WordPress-style, client panel)
 - `->columns(3)` on root Schema
-- Main content `Section` → `columnSpan(2)`: site, category, title, slug (hidden), description, content + word count
-- Sidebar `Section` → `columnSpan(1)`: published, featured, pub_date, author, tags
-- Cover image `Section` → `columnSpan(2)`: SpatieMediaLibraryFileUpload + "Elegir de biblioteca" button + cover_image URL field
-- SEO section below (full width)
+- Main content `Section` → `columnSpan(2)`: site + category in `Grid::make(2)`, title, slug (hidden), description (hidden, dehydratedWhenHidden), content + word count
+- Sidebar `Section` → `columnSpan(1)`: published, featured, pub_date, author (default: logged-in client name), tags
+- Cover image `Section` → `columnSpan(2)`: reactive ViewField preview + SpatieMediaLibraryFileUpload + "Elegir de biblioteca" button + cover_image hidden field
+- SEO section → `columnSpan(3)`: collapsed by default, title "SEO (opcional)"
+
+### PostInfolist (View Post)
+- `->columns(3)` layout: main content (2/3) + sidebar metadata (1/3)
+- Main: title (lg bold), description, cover image (250px), content (HTML prose)
+- Sidebar: site badge, category badge, status, featured, author, date, tags, slug (copyable), last edited (relative)
 
 ### Word count / reading time
 - Placeholder reactivo debajo del RichEditor (200 wpm, debounce 1s)
@@ -197,21 +234,27 @@ Full design tokens: `docs/design-system-reference.md`
 - Button "Vista previa" in EditPost header
 - Route `/preview/post/{id}` with blog-style template (Tailwind CDN)
 
+### API (SitePostsController)
+- Eager loads `category` and `seo` relationships
+- `description` falls back to `seo->description` if post description is null
+- All SEO fields read from `seo` relationship (polymorphic `seo_meta` table)
+- `cover_image` uses `cover_image_url` accessor (Spatie first, then `cover_image` field)
+
 ---
 
 ## SEO
 
 ### Plugin: nomanur/filament-seo-pro
-- `SeoSection::make()` in both PostForms
+- `SeoSection::make()` in PostForm, collapsed by default under "SEO (opcional)"
 - `seo_meta` table (polymorphic via `HasSeo` trait) is single source of truth
-- Manual SEO columns removed from posts table
+- `description` field on posts is nullable — SEO description used as fallback in API
 
 ---
 
 ## Categories
 
 ### Per site categories
-**ModeloOctatrico** (Ana Orero, site_id: 49): Vibración y Sonido (11), Matemáticas y Geometría (4), Cosmología (3), Fundamentos (1)
+**ModeloOctatrico** (Ana Orero, site_id: 49): Vibración y Sonido (11), Matemáticas y Geometría (4), Cosmología (4), Fundamentos (1)
 **ConkretPeru** (Joel Carbajal, site_id: 50): Concreto Premezclado (8), Mortero (7), Shotcrete (2), Guías Técnicas (3)
 
 ---
@@ -224,17 +267,27 @@ Feature completa pero desactivada. Ver `memory/project_editors_plan.md`.
 
 ## Client Panel Navigation
 ```
-Dashboard
-Mi Sitio
-Mis Suscripciones
+Dashboard                    (phosphor-house-line-light)
+Mi Sitio                     (phosphor-globe-light)
+Mis Suscripciones            (phosphor-credit-card-light)
 ─────────────────
 Contenido
-  ├── Mis Posts (sort 1)
-  ├── Categorías (sort 2)
-  └── Media Library (sort 3) [custom page]
+  ├── Mis Posts (sort 1)     (phosphor-file-text-light)
+  ├── Categorías (sort 2)   (phosphor-tag-light)
+  └── Media Library (sort 3) (phosphor-image-light)
 Portfolio (only if has_portfolio)
-  └── Mi Portfolio
+  └── Mi Portfolio           (phosphor-image-light)
 ```
+
+---
+
+## Dashboard Widget
+
+### Welcome Widget
+- LordIcon animated avatar: female (`wired-outline-269-avatar-female-hover-jump`) or male (`wired-outline-268-avatar-man-hover-jump`) based on `client.gender`
+- Default/fallback: male avatar
+- Stats: total posts, published, drafts, sites count
+- CTA buttons: "+ Nuevo Post" (brand blue `#0F65E6`), "Ver todos los posts"
 
 ---
 
@@ -242,6 +295,9 @@ Portfolio (only if has_portfolio)
 
 ### Joel (conkret-peru): `/Users/mirkodgz/Projects/joel-peru/conkret-peru-sito`
 ### Ana (modelo-octatrico): `/Users/mirkodgz/Projects/AnaOrero/modelo-octatrico`
+- SSR on Vercel (`output: 'server'`, `adapter: vercel()`)
+- Posts appear in real-time (no rebuild needed)
+- Env vars in Vercel: `CRM_URL`, `CRM_SITE_SLUG=modelo-octatrico`
 ### Pablo (pablopinxit): `/Users/mirkodgz/Projects/Pablo Pinxit/pablopinxit-sito`
 
 ---
@@ -263,5 +319,4 @@ php artisan icons:clear              # Clear blade icons cache
 npm run build                        # Compile Filament themes
 php artisan route:list | grep api
 php artisan portfolio:import-pablo   # Import Pablo Pinxit images to R2
-php artisan media:sync-curator       # Sync R2 images to Curator (deprecated)
 ```
