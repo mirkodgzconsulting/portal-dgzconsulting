@@ -5,9 +5,11 @@ namespace App\Filament\Cliente\Resources\PortfolioCategories;
 use App\Models\PortfolioCategory;
 use App\Models\Site;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Support\HtmlString;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
@@ -83,6 +85,11 @@ class PortfolioCategoryResource extends Resource
             TextInput::make('slug')
                 ->label('Slug')
                 ->hidden(),
+            TextInput::make('sort_order')
+                ->label('Orden en homepage')
+                ->numeric()
+                ->default(0)
+                ->helperText('Número más bajo aparece primero (1, 2, 3...)'),
             Textarea::make('description')
                 ->label('Descripción')
                 ->rows(2),
@@ -92,6 +99,9 @@ class PortfolioCategoryResource extends Resource
                 ->maxSize(5120)
                 ->disk('local')
                 ->visibility('public')
+                ->helperText(fn ($record) => $record?->cover_image
+                    ? new HtmlString('<img src="' . e($record->cover_image) . '" style="max-height:120px;object-fit:contain;border-radius:6px;margin-top:8px;">')
+                    : null)
                 ->saveUploadedFileUsing(function ($file, $get) {
                     $site = Site::find($get('site_id'));
                     $siteSlug = $site?->slug ?? 'general';
@@ -99,6 +109,17 @@ class PortfolioCategoryResource extends Resource
                     $path = "portfolio/{$siteSlug}/covers/{$filename}";
                     Storage::disk('r2')->put($path, file_get_contents($file->getRealPath()), 'public');
                     return Storage::disk('r2')->url($path);
+                })
+                ->afterStateHydrated(function (FileUpload $component, $state) {
+                    if ($state && str_starts_with($state, 'http')) {
+                        $component->state(null);
+                    }
+                })
+                ->dehydrateStateUsing(function ($state, $record) {
+                    if (empty($state) && $record) {
+                        return $record->cover_image;
+                    }
+                    return $state;
                 }),
         ]);
     }
@@ -109,6 +130,7 @@ class PortfolioCategoryResource extends Resource
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
             ->columns([
+                TextColumn::make('sort_order')->label('Orden')->sortable(),
                 ImageColumn::make('cover_image')->label('Portada')->circular(),
                 TextColumn::make('name')->label('Categoría')->searchable(),
                 TextColumn::make('items_count')->label('Imágenes')->counts('items'),

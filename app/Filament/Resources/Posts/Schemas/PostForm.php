@@ -12,6 +12,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
+use Illuminate\Support\HtmlString;
 use Filament\Schemas\Components\Section;
 use Nomanur\FilamentSeoPro\Forms\SeoSection;
 use Filament\Schemas\Schema;
@@ -84,7 +85,9 @@ class PostForm
                             ->imageEditor()
                             ->maxSize(5120)
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
-                            ->helperText('JPG, PNG, WebP — máx. 5 MB')
+                            ->helperText(fn ($record) => $record?->cover_image
+                                ? new HtmlString('<img src="' . e($record->cover_image) . '" style="max-height:100px;object-fit:contain;border-radius:6px;margin-top:8px;">')
+                                : 'JPG, PNG, WebP — máx. 5 MB')
                             ->columnSpan(3)
                             ->disk('local')
                             ->visibility('public')
