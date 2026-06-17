@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Posts\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
@@ -62,7 +63,17 @@ class PostForm
                 RichEditor::make('content')
                     ->label('Contenido')
                     ->columnSpanFull()
+                    ->live(debounce: 1000)
                     ->extraInputAttributes(['style' => 'min-height: 300px']),
+                Placeholder::make('word_count')
+                    ->label('')
+                    ->columnSpanFull()
+                    ->content(function ($get) {
+                        $text = strip_tags((string) $get('content'));
+                        $words = $text ? str_word_count($text) : 0;
+                        $minutes = max(1, (int) ceil($words / 200));
+                        return "{$words} palabras · {$minutes} min de lectura";
+                    }),
 
                 Grid::make(10)
                     ->columnSpanFull()
