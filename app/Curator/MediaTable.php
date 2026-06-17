@@ -12,6 +12,7 @@ use Filament\Tables\Columns\Layout\View;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class MediaTable
 {
@@ -19,13 +20,21 @@ class MediaTable
     {
         $livewire = $table->getLivewire();
 
+        $clientId = Auth::guard('client')->id()
+            ?? Auth::guard('client_user')->user()?->client_id;
+
         return $table
+            ->modifyQueryUsing(function ($query) use ($clientId) {
+                if ($clientId) {
+                    $query->where('client_id', $clientId);
+                }
+            })
             ->columns(
                 $livewire->layoutView === 'grid'
                     ? static::getGridColumns()
                     : static::getListColumns(),
             )
-            ->filters([
+            ->filters($clientId ? [] : [
                 SelectFilter::make('client_id')
                     ->label('Cliente')
                     ->options(Client::orderBy('name')->pluck('name', 'id'))
