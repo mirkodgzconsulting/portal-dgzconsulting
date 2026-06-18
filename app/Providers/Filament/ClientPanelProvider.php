@@ -6,8 +6,6 @@ use App\Filament\Cliente\Pages\EditProfile;
 use App\Filament\Cliente\Pages\Login;
 use App\Http\Middleware\AuthenticateClientOrEditor;
 use App\Models\Client;
-use App\Curator\ClientMediaResource;
-use Awcodes\Curator\CuratorPlugin;
 use Nomanur\FilamentSeoPro\SeoPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -91,8 +89,6 @@ class ClientPanelProvider extends PanelProvider
                 SeoPlugin::make()
                     ->enableManagementPage(false)
                     ->enableDashboardWidget(false),
-                CuratorPlugin::make()
-                    ->registerNavigation(false),
             ])
             ->middleware([
                 EncryptCookies::class,

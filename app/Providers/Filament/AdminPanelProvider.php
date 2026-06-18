@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use Awcodes\Curator\CuratorPlugin;
 use Nomanur\FilamentSeoPro\SeoPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -78,15 +77,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 SeoPlugin::make(),
-                CuratorPlugin::make()
-                    ->label('Media')
-                    ->pluralLabel('Biblioteca de medios')
-                    ->navigationIcon('phosphor-image-light')
-                    ->navigationGroup('Contenido')
-                    ->navigationSort(2)
-                    ->showBadge(true)
-                    ->registerNavigation(true)
-                    ->curations(true),
             ])
             ->middleware([
                 EncryptCookies::class,
