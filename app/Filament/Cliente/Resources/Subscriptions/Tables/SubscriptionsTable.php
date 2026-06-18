@@ -18,16 +18,41 @@ class SubscriptionsTable
                     ->label('Servicio'),
                 TextColumn::make('price')
                     ->label('Precio')
-                    ->money('EUR'),
+                    ->formatStateUsing(fn ($record) => match ($record->currency) {
+                        'EUR' => '€',
+                        'USD', 'ARS', 'COP', 'MXN' => '$',
+                        'PEN' => 'S/',
+                        'GBP' => '£',
+                        default => '',
+                    } . ' ' . number_format($record->price, 2)),
                 TextColumn::make('billing_cycle')
                     ->label('Ciclo')
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'monthly' => 'Mensual',
+                        'quarterly' => 'Trimestral',
                         'yearly' => 'Anual',
+                        'one_time' => 'Único',
                         default => $state,
                     }),
+                TextColumn::make('payment_method')
+                    ->label('Pago')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'stripe' => 'Stripe',
+                        'paypal' => 'PayPal',
+                        'transfer' => 'Transferencia',
+                        'cash' => 'Efectivo',
+                        default => '—',
+                    })
+                    ->color(fn (?string $state): string => match ($state) {
+                        'stripe' => 'info',
+                        'paypal' => 'warning',
+                        'transfer' => 'gray',
+                        'cash' => 'success',
+                        default => 'gray',
+                    }),
                 TextColumn::make('renewal_date')
-                    ->label('Próximo vencimiento')
+                    ->label('Vencimiento')
                     ->date()
                     ->sortable(),
                 TextColumn::make('status')

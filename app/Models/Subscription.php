@@ -11,10 +11,13 @@ class Subscription extends Model
         'site_id',
         'service_type',
         'price',
+        'currency',
         'billing_cycle',
         'start_date',
         'renewal_date',
         'status',
+        'payment_method',
+        'payment_link',
         'notes',
     ];
 

@@ -1,5 +1,4 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Urbanist:wght@400;500;600;700;800&display=swap');
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
@@ -43,6 +42,9 @@ h1, h2, h3, h4 {
 }
 
 /* ── Sidebar: Vercel dimensions ── */
+.fi-sidebar-nav-groups {
+    row-gap: 0px !important;
+}
 .fi-sidebar-nav {
     padding-inline: 12px !important;
     background: white;
@@ -188,18 +190,4 @@ h1, h2, h3, h4 {
 .dark .skeleton {
     background: linear-gradient(90deg, #27272a 25%, #3f3f46 50%, #27272a 75%);
     background-size: 200% 100%;
-}
-
-/* ── Curator overrides ── */
-.curator-column img {
-    display: block;
-    object-fit: cover;
-    border-radius: 4px;
-}
-fi-ta-col:has(.curator-column) {
-    align-items: center;
-    align-self: center;
-}
-.dgz-hidden-cell {
-    display: none !important;
 }

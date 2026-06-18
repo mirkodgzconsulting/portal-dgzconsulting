@@ -26,6 +26,7 @@ GET /api/sites/{site:slug}/posts         → SitePostsController
 GET /api/sites/{site:slug}/categories    → SiteCategoriesController
 GET /api/sites/{site:slug}/portfolio     → SitePortfolioController
 GET /api/client-media                    → ClientMediaController (auth required)
+GET /api/subscriptions/upcoming?days=30  → SubscriptionsController (for n8n reminders)
 ```
 
 ---
@@ -156,7 +157,7 @@ Full design tokens: `docs/design-system-reference.md`
 - **Spatie Media Library** (`spatie/laravel-medialibrary` + `filament/spatie-laravel-media-library-plugin`)
 - Config: `config/media-library.php` with `disk_name: r2`
 - Models with `HasMedia` + `InteractsWithMedia`: Post, Client, PortfolioCategory, PortfolioItem
-- **Curator** still installed but nav hidden (`->registerNavigation(false)`) — pending removal
+- **Curator** removed completely — Spatie is the only media system
 
 ### Media Upload Flow (Post cover)
 Two methods, both sync `cover_image` field automatically:
@@ -172,9 +173,12 @@ Two methods, both sync `cover_image` field automatically:
 - Shows existing Spatie media on edit as fallback
 - X button to remove image
 
-### Media Library Page (custom)
+### Media Library Page (custom, client panel)
 - `app/Filament/Cliente/Pages/MediaLibrary.php` — custom page with upload zone + grid
 - Uses `fi-ta-ctn` class for consistent card styling
+- **Filter tabs** by portfolio category (Walls, Shutters, etc.) + Posts + Library uploads
+- **Pagination** with page numbers, per-page selector (24/48/96/All)
+- **Navigation badge** with total media count
 - Grid view with `rounded-xl shadow-sm border border-zinc-200` per image
 - Shows all Spatie media belonging to the client (via Client, Post, Portfolio models)
 
@@ -199,12 +203,12 @@ Two methods, both sync `cover_image` field automatically:
 - Drag-to-reorder via `sort_order` in both categories and items
 
 ### API
-- `GET /api/sites/{slug}/portfolio` — categories with nested items, ordered by sort_order
+- `GET /api/sites/{slug}/portfolio` — categories with nested items, ordered by sort_order DESC (recientes primero)
 
 ### Pablo Pinxit Data
 - Client ID: 5, Site ID: 3, slug: `pablopinxit`
-- 6 categories: Walls (38), Shutters (25), Dadapop (21), Ikons (88), Hybris (49), Mind Blowing Garden (27)
-- 248 images uploaded to R2 via `php artisan portfolio:import-pablo`
+- 6 categories: Walls (58), Shutters (25), Dadapop (21), Ikons (88), Hybris (49), Mind Blowing Garden (27)
+- 268 total images on R2, 248 originals + 20 added 2026-06-18
 
 ### Astro Integration
 - `/Users/mirkodgz/Projects/Pablo Pinxit/pablopinxit-sito/`
@@ -256,6 +260,45 @@ Two methods, both sync `cover_image` field automatically:
 ### Per site categories
 **ModeloOctatrico** (Ana Orero, site_id: 49): Vibración y Sonido (11), Matemáticas y Geometría (4), Cosmología (4), Fundamentos (1)
 **ConkretPeru** (Joel Carbajal, site_id: 50): Concreto Premezclado (8), Mortero (7), Shotcrete (2), Guías Técnicas (3)
+
+---
+
+## Subscriptions / Billing
+
+### Model fields
+- `site_id`, `service_type`, `price`, `currency` (EUR/USD/PEN/etc.), `billing_cycle` (monthly/quarterly/yearly/one_time)
+- `payment_method` — stripe, paypal, transfer, cash (nullable)
+- `payment_link` — URL de pago Stripe/PayPal (nullable, visible solo para stripe/paypal en form)
+- `status` — pagado, por_vencer, vencido, fuera_de_servicio
+- `start_date`, `renewal_date`, `notes`
+
+### Client panel
+- Lista de suscripciones con badge de método de pago y estado
+- Vista detalle con botón "Pagar ahora →" si hay payment_link
+
+### API for n8n reminders
+- `GET /api/subscriptions/upcoming?days=30` — suscripciones que vencen en N días
+- Devuelve: client name/email/phone, service, price, currency, payment_method, payment_link, renewal_date, days_until_renewal
+
+### Future phases
+- **Fase 2**: Laravel Cashier + Stripe para cobro automático recurrente (clientes selectos)
+- **Fase 3**: n8n workflows para recordatorios via Resend (email) y Evolution API (WhatsApp)
+
+---
+
+## Phone Input
+- Package: `ysfkaya/filament-phone-input` v4.2
+- Used in admin Client form for `phone` field
+- Default country: IT, separate dial code enabled
+- Flag images in `public/vendor/filament-phone-input/`
+
+---
+
+## Admin Media Library
+- `app/Filament/Pages/MediaLibrary.php` — custom page showing ALL media across all clients
+- Filters: by client (dropdown), by type (Portfolio/Posts/Library)
+- Detail panel shows: file info, client name, context (Post title / Portfolio category)
+- Badge with total media count in sidebar
 
 ---
 

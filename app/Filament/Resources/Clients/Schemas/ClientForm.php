@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 
 class ClientForm
 {
@@ -23,9 +24,11 @@ class ClientForm
                 TextInput::make('secondary_email')
                     ->label('Email secundario')
                     ->email(),
-                TextInput::make('phone')
+                PhoneInput::make('phone')
                     ->label('Teléfono / WhatsApp')
-                    ->tel(),
+                    ->defaultCountry('IT')
+                    ->initialCountry('IT')
+                    ->separateDialCode(),
                 Select::make('gender')
                     ->label('Sexo')
                     ->options([
