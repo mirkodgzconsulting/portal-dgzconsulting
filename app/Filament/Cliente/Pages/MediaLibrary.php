@@ -28,10 +28,34 @@ class MediaLibrary extends Page
         return 'Contenido';
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        $clientId = Auth::guard('client')->id()
+            ?? Auth::guard('client_user')->user()?->client_id;
+
+        if (! $clientId) return null;
+
+        $siteIds = Site::where('client_id', $clientId)->pluck('id');
+        $postIds = Post::whereIn('site_id', $siteIds)->pluck('id');
+        $portfolioCatIds = PortfolioCategory::whereIn('site_id', $siteIds)->pluck('id');
+        $portfolioItemIds = PortfolioItem::whereIn('portfolio_category_id', $portfolioCatIds)->pluck('id');
+
+        $count = Media::where(function ($query) use ($clientId, $postIds, $portfolioCatIds, $portfolioItemIds) {
+            $query->where(fn ($q) => $q->where('model_type', Client::class)->where('model_id', $clientId))
+                ->orWhere(fn ($q) => $q->where('model_type', Post::class)->whereIn('model_id', $postIds))
+                ->orWhere(fn ($q) => $q->where('model_type', PortfolioCategory::class)->whereIn('model_id', $portfolioCatIds))
+                ->orWhere(fn ($q) => $q->where('model_type', PortfolioItem::class)->whereIn('model_id', $portfolioItemIds));
+        })->count();
+
+        return (string) $count;
+    }
+
     protected string $view = 'filament.cliente.pages.media-library';
 
     public string $search = '';
     public string $viewMode = 'grid';
+    public string $filter = 'all';
+    public int $perPage = 24;
     public ?int $selectedMediaId = null;
     public $newFiles = [];
 
@@ -47,31 +71,75 @@ class MediaLibrary extends Page
         return $clientId ? Client::find($clientId) : null;
     }
 
+    public function getFilters(): array
+    {
+        $clientId = $this->getClientId();
+        if (! $clientId) return [];
+
+        $siteIds = Site::where('client_id', $clientId)->pluck('id');
+        $categories = PortfolioCategory::whereIn('site_id', $siteIds)->orderBy('name')->get();
+        $hasPosts = Post::whereIn('site_id', $siteIds)->whereHas('media')->exists();
+        $hasLibrary = Media::where('model_type', Client::class)->where('model_id', $clientId)->exists();
+
+        $filters = [['key' => 'all', 'label' => 'Todas', 'count' => null]];
+
+        foreach ($categories as $cat) {
+            $itemIds = PortfolioItem::where('portfolio_category_id', $cat->id)->pluck('id');
+            $count = Media::where('model_type', PortfolioItem::class)->whereIn('model_id', $itemIds)->count();
+            if ($count > 0) {
+                $filters[] = ['key' => 'cat_' . $cat->id, 'label' => $cat->name, 'count' => $count];
+            }
+        }
+
+        if ($hasPosts) {
+            $postIds = Post::whereIn('site_id', $siteIds)->pluck('id');
+            $count = Media::where('model_type', Post::class)->whereIn('model_id', $postIds)->count();
+            $filters[] = ['key' => 'posts', 'label' => 'Posts', 'count' => $count];
+        }
+
+        if ($hasLibrary) {
+            $count = Media::where('model_type', Client::class)->where('model_id', $clientId)->count();
+            $filters[] = ['key' => 'library', 'label' => 'Subidas', 'count' => $count];
+        }
+
+        return $filters;
+    }
+
     public function getMediaProperty()
     {
         $clientId = $this->getClientId();
-        if (! $clientId) return Media::query()->whereRaw('1=0')->paginate(24);
+        if (! $clientId) return Media::query()->whereRaw('1=0')->paginate($this->perPage);
 
         $siteIds = Site::where('client_id', $clientId)->pluck('id');
-        $postIds = Post::whereIn('site_id', $siteIds)->pluck('id');
-        $portfolioCatIds = PortfolioCategory::whereIn('site_id', $siteIds)->pluck('id');
-        $portfolioItemIds = PortfolioItem::whereIn('portfolio_category_id', $portfolioCatIds)->pluck('id');
 
-        return Media::query()
-            ->where(function ($query) use ($clientId, $postIds, $portfolioCatIds, $portfolioItemIds) {
-                $query->where(function ($q) use ($clientId) {
-                    $q->where('model_type', Client::class)->where('model_id', $clientId);
-                })->orWhere(function ($q) use ($postIds) {
-                    $q->where('model_type', Post::class)->whereIn('model_id', $postIds);
-                })->orWhere(function ($q) use ($portfolioCatIds) {
-                    $q->where('model_type', PortfolioCategory::class)->whereIn('model_id', $portfolioCatIds);
-                })->orWhere(function ($q) use ($portfolioItemIds) {
-                    $q->where('model_type', PortfolioItem::class)->whereIn('model_id', $portfolioItemIds);
-                });
-            })
+        $query = Media::query();
+
+        if ($this->filter === 'all') {
+            $postIds = Post::whereIn('site_id', $siteIds)->pluck('id');
+            $portfolioCatIds = PortfolioCategory::whereIn('site_id', $siteIds)->pluck('id');
+            $portfolioItemIds = PortfolioItem::whereIn('portfolio_category_id', $portfolioCatIds)->pluck('id');
+
+            $query->where(function ($q) use ($clientId, $postIds, $portfolioCatIds, $portfolioItemIds) {
+                $q->where(fn ($q2) => $q2->where('model_type', Client::class)->where('model_id', $clientId))
+                    ->orWhere(fn ($q2) => $q2->where('model_type', Post::class)->whereIn('model_id', $postIds))
+                    ->orWhere(fn ($q2) => $q2->where('model_type', PortfolioCategory::class)->whereIn('model_id', $portfolioCatIds))
+                    ->orWhere(fn ($q2) => $q2->where('model_type', PortfolioItem::class)->whereIn('model_id', $portfolioItemIds));
+            });
+        } elseif (str_starts_with($this->filter, 'cat_')) {
+            $catId = (int) str_replace('cat_', '', $this->filter);
+            $itemIds = PortfolioItem::where('portfolio_category_id', $catId)->pluck('id');
+            $query->where('model_type', PortfolioItem::class)->whereIn('model_id', $itemIds);
+        } elseif ($this->filter === 'posts') {
+            $postIds = Post::whereIn('site_id', $siteIds)->pluck('id');
+            $query->where('model_type', Post::class)->whereIn('model_id', $postIds);
+        } elseif ($this->filter === 'library') {
+            $query->where('model_type', Client::class)->where('model_id', $clientId);
+        }
+
+        return $query
             ->when($this->search, fn ($q) => $q->where('file_name', 'like', "%{$this->search}%"))
             ->orderByDesc('created_at')
-            ->paginate(24);
+            ->paginate($this->perPage);
     }
 
     public function getSelectedMedia(): ?Media
@@ -116,5 +184,21 @@ class MediaLibrary extends Page
     public function updatedSearch(): void
     {
         $this->resetPage();
+    }
+
+    public function updatedFilter(): void
+    {
+        $this->resetPage();
+        $this->selectedMediaId = null;
+    }
+
+    public function updatedPerPage(): void
+    {
+        $this->resetPage();
+    }
+
+    public static function getMediaUrl(Media $media): string
+    {
+        return $media->getCustomProperty('original_url') ?? $media->getUrl();
     }
 }

@@ -11,7 +11,7 @@ class SitePortfolioController extends Controller
     public function index(Site $site): JsonResponse
     {
         $categories = $site->portfolioCategories()
-            ->with(['items' => fn ($q) => $q->orderBy('sort_order')])
+            ->with(['items' => fn ($q) => $q->orderByDesc('sort_order')])
             ->orderBy('sort_order')
             ->get()
             ->map(fn ($cat) => [

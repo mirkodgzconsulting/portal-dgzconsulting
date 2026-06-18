@@ -24,6 +24,27 @@
         {{-- Content card (matches fi-ta-ctn style) --}}
         <div class="fi-ta-ctn p-4 space-y-4" style="flex-direction: column;">
 
+        {{-- Filter tabs --}}
+        @php $filters = $this->getFilters(); @endphp
+        @if(count($filters) > 2)
+        <div class="flex flex-wrap items-center gap-2">
+            @foreach($filters as $f)
+                <button
+                    wire:click="$set('filter', '{{ $f['key'] }}')"
+                    class="inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-xs font-medium transition-colors
+                        {{ $filter === $f['key']
+                            ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
+                            : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700' }}"
+                >
+                    {{ $f['label'] }}
+                    @if($f['count'] !== null)
+                        <span class="text-[10px] opacity-70">{{ $f['count'] }}</span>
+                    @endif
+                </button>
+            @endforeach
+        </div>
+        @endif
+
         {{-- Toolbar --}}
         <div class="flex items-center justify-between gap-4">
             <div class="flex items-center gap-2">
@@ -66,7 +87,7 @@
                                         {{ $selectedMediaId === $item->id ? 'border-blue-500 ring-2 ring-blue-200' : 'border-zinc-200 hover:border-zinc-400' }}"
                                 >
                                     <img
-                                        src="{{ $item->getUrl() }}"
+                                        src="{{ $this->getMediaUrl($item) }}"
                                         alt="{{ $item->name }}"
                                         class="w-full h-full object-cover"
                                         loading="lazy"
@@ -87,7 +108,7 @@
                                     class="flex items-center gap-4 px-4 py-3 cursor-pointer border-b border-zinc-100 dark:border-zinc-800 last:border-b-0 transition-colors
                                         {{ $selectedMediaId === $item->id ? 'bg-blue-50 dark:bg-blue-950' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800' }}"
                                 >
-                                    <img src="{{ $item->getUrl() }}" alt="{{ $item->name }}" class="w-12 h-12 object-cover rounded" loading="lazy" />
+                                    <img src="{{ $this->getMediaUrl($item) }}" alt="{{ $item->name }}" class="w-12 h-12 object-cover rounded" loading="lazy" />
                                     <div class="flex-1 min-w-0">
                                         <div class="text-sm font-medium text-zinc-900 dark:text-white truncate">{{ $item->file_name }}</div>
                                         <div class="text-xs text-zinc-500">{{ $item->human_readable_size }} · {{ $item->created_at->format('d/m/Y') }}</div>
@@ -97,8 +118,42 @@
                         </div>
                     @endif
 
-                    <div class="mt-4">
-                        {{ $media->links() }}
+                    <div class="mt-4 flex items-center justify-between border-t border-zinc-200 dark:border-zinc-700 pt-4">
+                        <div class="text-xs text-zinc-500">
+                            {{ $media->firstItem() }}–{{ $media->lastItem() }} de {{ $media->total() }}
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-zinc-500">Por página</span>
+                                <select wire:model.live="perPage" class="h-8 text-xs border border-zinc-200 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-900 px-2">
+                                    <option value="24">24</option>
+                                    <option value="48">48</option>
+                                    <option value="96">96</option>
+                                    <option value="248">Todas</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                @if($media->onFirstPage())
+                                    <span class="w-8 h-8 flex items-center justify-center rounded text-zinc-300 text-xs">‹</span>
+                                @else
+                                    <button wire:click="previousPage" class="w-8 h-8 flex items-center justify-center rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 text-xs transition-colors">‹</button>
+                                @endif
+
+                                @foreach($media->getUrlRange(max(1, $media->currentPage() - 2), min($media->lastPage(), $media->currentPage() + 2)) as $page => $url)
+                                    <button
+                                        wire:click="gotoPage({{ $page }})"
+                                        class="w-8 h-8 flex items-center justify-center rounded text-xs font-medium transition-colors
+                                            {{ $page === $media->currentPage() ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600' }}"
+                                    >{{ $page }}</button>
+                                @endforeach
+
+                                @if($media->hasMorePages())
+                                    <button wire:click="nextPage" class="w-8 h-8 flex items-center justify-center rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 text-xs transition-colors">›</button>
+                                @else
+                                    <span class="w-8 h-8 flex items-center justify-center rounded text-zinc-300 text-xs">›</span>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 @endif
             </div>
@@ -108,7 +163,7 @@
                 <div class="w-72 shrink-0 border border-zinc-200 dark:border-zinc-700 rounded-lg p-4 space-y-4 self-start sticky top-4">
                     <div class="text-sm font-semibold text-zinc-900 dark:text-white">Attachment Details</div>
 
-                    <img src="{{ $selected->getUrl() }}" alt="{{ $selected->name }}" class="w-full rounded-lg" />
+                    <img src="{{ $this->getMediaUrl($selected) }}" alt="{{ $selected->name }}" class="w-full rounded-lg" />
 
                     <div class="space-y-2 text-xs text-zinc-500">
                         <div><span class="font-medium text-zinc-700 dark:text-zinc-300">Nombre:</span> {{ $selected->file_name }}</div>
@@ -117,7 +172,7 @@
                         <div><span class="font-medium text-zinc-700 dark:text-zinc-300">Subida:</span> {{ $selected->created_at->format('d M Y, H:i') }}</div>
                         <div>
                             <span class="font-medium text-zinc-700 dark:text-zinc-300">URL:</span>
-                            <input type="text" value="{{ $selected->getUrl() }}" readonly
+                            <input type="text" value="{{ $this->getMediaUrl($selected) }}" readonly
                                 class="w-full mt-1 px-2 py-1 text-xs border border-zinc-200 dark:border-zinc-700 rounded bg-zinc-50 dark:bg-zinc-800"
                                 onclick="this.select(); navigator.clipboard.writeText(this.value);"
                             />
