@@ -3,6 +3,7 @@
 namespace App\Filament\Cliente\Resources\PortfolioCategories\RelationManagers;
 
 use App\Models\Site;
+use App\Services\PortfolioSeoGenerator;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -11,6 +12,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
@@ -31,7 +33,7 @@ class PortfolioItemsRelationManager extends RelationManager
             FileUpload::make('image_url')
                 ->label('Imagen')
                 ->image()
-                ->required()
+                ->required(fn ($record) => $record === null)
                 ->maxSize(10240)
                 ->disk('local')
                 ->visibility('public')
@@ -74,7 +76,68 @@ class PortfolioItemsRelationManager extends RelationManager
                 TextColumn::make('title')->label('Título')->placeholder('Sin título'),
                 TextColumn::make('sort_order')->label('Orden'),
             ])
-            ->headerActions([CreateAction::make()->label('Agregar imagen')])
+            ->headerActions([
+                CreateAction::make()->label('Agregar imagen'),
+                Action::make('generateItemsSeo')
+                    ->label('Generar SEO imágenes (IA)')
+                    ->icon('heroicon-o-sparkles')
+                    ->color('info')
+                    ->requiresConfirmation()
+                    ->modalDescription('Genera descriptions SEO para todas las imágenes sin descripción en esta categoría. Puede tardar un minuto.')
+                    ->action(function (PortfolioSeoGenerator $generator) {
+                        if (! $generator->isConfigured()) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('ANTHROPIC_API_KEY no configurada')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        $category = $this->getOwnerRecord();
+                        $items = $category->items()
+                            ->where(function ($q) {
+                                $q->whereNull('description')->orWhere('description', '');
+                            })
+                            ->orderBy('sort_order')
+                            ->get();
+
+                        if ($items->isEmpty()) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Todas las imágenes ya tienen descripción')
+                                ->info()
+                                ->send();
+
+                            return;
+                        }
+
+                        $updated = 0;
+                        foreach ($items->chunk(20) as $chunk) {
+                            try {
+                                $descriptions = $generator->generateItemDescriptions($category, $chunk);
+                                foreach ($chunk as $item) {
+                                    if (empty($descriptions[$item->id])) {
+                                        continue;
+                                    }
+                                    $item->update(['description' => $descriptions[$item->id]]);
+                                    $updated++;
+                                }
+                            } catch (\Throwable $e) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title('Error parcial al generar SEO')
+                                    ->body($e->getMessage())
+                                    ->warning()
+                                    ->send();
+                            }
+                            usleep(500_000);
+                        }
+
+                        \Filament\Notifications\Notification::make()
+                            ->title("SEO generado para {$updated} imágenes")
+                            ->success()
+                            ->send();
+                    }),
+            ])
             ->recordActions([EditAction::make(), DeleteAction::make()])
             ->toolbarActions([
                 BulkActionGroup::make([DeleteBulkAction::make()]),
